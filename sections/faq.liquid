@@ -1,0 +1,770 @@
+<div id="top">
+  <div>
+      <div class="section-header" style="background-color: #4b7d2c; padding: 2rem 0; margin-bottom: 0;">
+      <div class="page-width">
+        <h1 style="color:#fff; text-transform: uppercase; margin-bottom: 0;">{{ page.title }}</h1>
+      </div>
+    </div>
+    {%- if section.settings.show_banner -%}
+      <div class="section-header " style="background-color: #E9EBEC; padding: 25px 0 ; ">
+        <div class="page-width">
+          <h3 style="color:#6CB33F; text-transform: uppercase; margin-bottom:0">{{ section.settings.banner_text}}</h3>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="page-width flex-wrap-sm" style="  display:flex;  margin: 0 auto; justify-content: flex-end; padding: 20px 55px">
+    <div class="w-25">
+        
+         {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'link_list' -%}
+                {%- assign footer_linklist = block.settings.menu -%}
+
+                  <ul class="site-side-nav__linklist
+                            {% if inline_list %}list--inline{% endif %}">
+                    {%- for link in linklists[footer_linklist].links -%}
+                      <li class="site-side-nav__linklist-item" style=" font-weight:600; padding-bottom: 10px;">
+                        <a href="{{ link.url }}"
+                          {% if link.current %} aria-current="page"{% endif %}
+                        >
+                          {{ link.title | escape }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+            {%- endcase -%}
+          {%- endfor -%}
+    </div>
+    
+    
+    <div class="w-75">
+    
+    
+	{%- for block in section.blocks -%}
+      {%- case block.type -%}
+      
+<!--      heading  -->
+
+ {%- when 'textarea' -%}    
+{%- include 'h-tags.liquid' -%}
+
+<!--     end heading  -->
+
+
+<!--      Accordion  -->
+
+    
+{%- when 'accordion' -%}    
+{%- include 'accordion' -%}    
+	    <div style="margin-top: 10px;">
+    <a style="color:#6CB33F" href="#top">« back to top</a>
+    </div>
+
+<!--     End Accordion  -->
+
+
+<!--      Content  -->
+      
+         {%- when 'richtext' -%}    
+
+     		 <p> {{ block.settings.page_content }}</p>
+           
+
+
+         {%- when 'page_content' -%}    
+
+     		 <p>{{ page.content }} </p>
+
+
+<!--     End Content  -->
+ 
+ 
+<!--      Button  -->
+      
+{%- when 'button' -%}    
+{% include 'button' %}
+
+
+<!--      End Button  -->
+
+{%- when 'padding' -%}
+      
+<div style="padding:{{ block.settings.padding_size }}px;"></div>
+          
+<!--      Cards  -->
+      
+{%- when 'cards' -%}
+      
+{% include 'cards' %}
+
+<!--      End Cards  -->
+
+
+
+
+
+
+
+      {%- endcase -%}
+    {%- endfor -%}
+
+  </div>    
+
+</div>
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "FAQ Template",
+	"settings": [
+
+    {
+      "type": "header",
+      "content": {
+        "en": "Show Banner",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      },
+      "info": {
+        "en": "Show Banner under the header",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      }
+    },
+
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": {
+
+        "en": "Show banner",
+        "es": "mostrar banner",
+        "fr": "afficher la bannière"
+      },
+      "default": false
+    },
+	{
+      "type": "text",
+      "id": "banner_text",
+      "label": {
+        "en": "Banner Text",
+        "es": "texto de banner",
+        "fr": "texte de la bannière"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": {
+        "en": "Menu",
+        "es": "Menú",
+        "fr": "Menu"
+      },
+
+      "settings": [
+
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": {
+
+            "en": "Menu",
+            "es": "Menú",
+            "fr": "Menu"
+          },
+          "default": "footer"
+        }
+      ]
+    },
+        {
+      "type": "padding",
+      "name": {
+        "en": "Padding",
+        "es": "Padding",
+        "fr": "Padding"
+      },
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_size",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding",
+          "default": 20
+      }
+      ]
+    },
+ 
+
+    	{
+      "type": "accordion",
+      "name": {
+        "en": "Accordion",
+        "es": "Accordion",
+        "fr": "Accordion"
+      },
+
+      "settings": [
+        {
+          "type": "text",
+          "id": "accordion_title",
+          "label": {
+            "en": "Title",
+            "es": "Título",
+            "fr": "Titre"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_1",
+          "label": {
+            "en": "Question 1",
+            "es": "Pregunta 1",
+            "fr": "Question 1"
+          },
+          "default": {
+            "en": "Question 1",
+            "es": "Pregunta 1",
+            "fr": "Question 1"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_1",
+          "label": {
+            "en": "Answer 1",
+            "es": "Respuesta 1",
+            "fr": "Répondre 1"
+          },
+          "default": {
+            "en": "<p>Answer 1</p>",
+            "es": "<p>Respuesta 1</p>",
+            "fr": "<p>Répondre 1</p>"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_2",
+          "label": {
+            "en": "Question 2",
+            "es": "Pregunta 2",
+            "fr": "Question 2"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_2",
+          "label": {
+            "en": "Answer 2",
+            "es": "Respuesta 2",
+            "fr": "Répondre 2"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_3",
+          "label": {
+            "en": "Question 3",
+            "es": "Pregunta 3",
+            "fr": "Question 3"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_3",
+          "label": {
+            "en": "Answer 3",
+            "es": "Respuesta 3",
+            "fr": "Répondre 3"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_4",
+          "label": {
+            "en": "Question 4",
+            "es": "Pregunta 4",
+            "fr": "Question 4"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_4",
+          "label": {
+            "en": "Answer 4",
+            "es": "Respuesta 4",
+            "fr": "Répondre 4"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_5",
+          "label": {
+            "en": "Question 5",
+            "es": "Pregunta 5",
+            "fr": "Question 5"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_5",
+          "label": {
+            "en": "Answer 5",
+            "es": "Respuesta 5",
+            "fr": "Répondre 5"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_6",
+          "label": {
+            "en": "Question 6",
+            "es": "Pregunta 6",
+            "fr": "Question 6"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_6",
+          "label": {
+            "en": "Answer 6",
+            "es": "Respuesta 6",
+            "fr": "Répondre 6"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_title_7",
+          "label": {
+            "en": "Question 7",
+            "es": "Pregunta 7",
+            "fr": "Question 7"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_content_7",
+          "label": {
+            "en": "Answer 7",
+            "es": "Respuesta 7",
+            "fr": "Répondre 7"
+          }
+        },
+        {
+          "type": "richtext",
+          "id": "accordion_title_8",
+          "label": {
+            "en": "Question 8",
+            "es": "Pregunta 8",
+            "fr": "Question 8"
+          }
+        },
+        {
+          "type": "text",
+          "id": "accordion_content_8",
+          "label": {
+            "en": "Answer 8",
+            "es": "Respuesta 8",
+            "fr": "Répondre 8"
+          }
+        }
+      ]
+    },
+
+
+    {
+      "type": "textarea",
+
+      "name": {
+        "en": "Title",
+        "es": "Título",
+        "fr": "Titre"
+      },
+		
+      "settings": [
+        {
+           "type": "select",
+           "id": "heading_size",
+           "options": [
+              { "value": "h2", "label": "H2"},
+              { "value": "h3", "label": "H3"},
+              { "value": "h4", "label": "H4"}
+           ],
+           "label": "Heading Size"
+        },
+        {
+           "type": "radio",
+           "id": "header-alignment",
+           "options": [
+              { "value": "left", "label": "Left"},
+              { "value": "center", "label": "Centered"}
+           ],
+           "label": "Header alignment"
+        },
+
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": {
+            "en": "Title",
+            "es": "Título",
+            "fr": "Titre"
+          },
+  			"default": {
+            "en": "Title",
+            "es": "Título",
+            "fr": "Titre"
+          }
+        }
+      ]
+    },
+	{
+      "type": "richtext",
+      "name": {
+        "en": "Editable Content",
+        "es": "Texto",
+        "fr": "Texte"
+      },
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "page_content",
+          "label": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          },
+          "default": {
+            "en": "<p>Content</p>",
+            "es": "<p>Contenido</p>",
+            "fr": "<p>Contenu</p>"
+          }
+        }
+      ]
+    },
+	{
+      "type": "page_content",
+      "name": {
+        "en": "Page Content",
+        "es": "Page Contenido",
+        "fr": "Page Contenu"
+      }
+    },
+	{
+      "type": "button",
+      "name": {
+        "en": "Button",
+        "es": "Botón",
+        "fr": "Bouton "
+      },
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          },
+          "default": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          }
+        },
+        {
+          "id": "button_link",
+          "type": "url",
+          "label": "Button Link"
+        },
+        {
+           "type": "radio",
+           "id": "button-alignment",
+           "options": [
+              { "value": "left", "label": "Left"},
+              { "value": "center", "label": "Centered"}
+           ],
+           "label": "Button alignment"
+        }
+      ]
+    },
+
+
+	      {
+      "type": "cards",
+
+      "name": {
+        "en": "Cards",
+        "es": "Cards",
+        "fr": "Cards"
+      },
+		
+      "settings": [
+          {
+           "type": "select",
+           "id": "select_icon",
+           "options": [
+              { "value": "fas fa-hand-pointer", "label": "Select"},
+              { "value": "fas fa-phone-alt", "label": "Phone"},
+              { "value": "fad fa-comments", "label": "Chat"},
+              { "value": "fas fa-envelope", "label": "Email"},
+			        { "value": "fas fa-file-check", "label": "Warrenty Registration"},
+              { "value": "fad fa-tools", "label": "Parts"}
+
+           ],
+          "default": "fas fa-hand-pointer",
+           "label": "Icon 1"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          },
+          "default": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          }
+        },
+        {
+          "id": "button_link",
+          "type": "url",
+          "label": "Button Link"
+        },
+
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          },
+  			"default": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          }
+        },
+          {
+           "type": "select",
+           "id": "select_icon_2",
+           "options": [
+              { "value": "fas fa-hand-pointer", "label": "Select"},
+              { "value": "fas fa-phone-alt", "label": "Phone"},
+              { "value": "fad fa-comments", "label": "Chat"},
+              { "value": "fas fa-envelope", "label": "Email"},
+			        { "value": "fas fa-file-check", "label": "Warrenty Registration"},
+              { "value": "fad fa-tools", "label": "Parts"}
+
+           ],
+          "default": "fas fa-hand-pointer",
+           "label": "Icon 2"
+        },
+        {
+          "type": "text",
+          "id": "button_text_2",
+          "label": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          },
+          "default": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          }
+        },
+        {
+          "id": "button_link_2",
+          "type": "url",
+          "label": "Button Link"
+        },
+
+        {
+          "type": "textarea",
+          "id": "content_2",
+          "label": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          },
+  			"default": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          }
+        },
+          {
+           "type": "select",
+           "id": "select_icon_3",
+           "options": [
+              { "value": "fas fa-hand-pointer", "label": "Select"},
+              { "value": "fas fa-phone-alt", "label": "Phone"},
+              { "value": "fad fa-comments", "label": "Chat"},
+              { "value": "fas fa-envelope", "label": "Email"},
+			        { "value": "fas fa-file-check", "label": "Warrenty Registration"},
+              { "value": "fad fa-tools", "label": "Parts"}
+
+           ],
+          "default": "fas fa-hand-pointer",
+           "label": "Icon 3"
+        },
+        {
+          "type": "text",
+          "id": "button_text_3",
+          "label": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          },
+          "default": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          }
+        },
+        {
+          "id": "button_link_3",
+          "type": "url",
+          "label": "Button Link"
+        },
+
+        {
+          "type": "textarea",
+          "id": "content_3",
+          "label": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          },
+  			"default": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          }
+        }
+      ]
+    }
+
+
+
+
+  ]
+
+}
+{% endschema %}
+
+{% stylesheet %}
+
+
+
+
+.w-33{
+	width: 33%;
+}
+
+
+@media (max-width: 780px) {
+.w-33{
+	width:100%;
+}
+.dir-column{
+flex-direction: column;
+}
+}
+  
+.w-75{
+  width: 75%;
+  }
+  
+.w-25 {
+  width: 25%;
+  }
+  
+@media (max-width: 942px) {
+.w-75{
+  width: 100%;
+  }
+  
+.w-25 {
+  width: 100%;
+  }
+}
+
+
+
+       
+
+        .faq-accordion {
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #6CB33F;
+
+        }
+        .faq-accordion .faq-accordion-head {
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+            color: #000;
+            border-top: 1px solid #6CB33F;
+            position: relative;
+            padding: 12px 5px;
+            font-size: 0.87em;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+
+        .faq-accordion .faq-accordion-head * {
+            cursor: pointer;
+
+        }
+        .faq-accordion .faq-accordion-head h4 {
+            float: left;
+        }
+
+        .faq-accordion .faq-accordion-body {
+            border-bottom: 2px solid #6CB33F;
+            padding: 10px 5px 20px 5px;
+            height: auto;
+            display: none;
+            background-color: #fff;
+        }
+
+
+        .close{
+            float: none!important;
+        } 
+  
+ 
+{% endstylesheet %}
+
+{% javascript %}
+
+     jQuery('.faq-accordion').each(function () {
+        var accordian = jQuery(this);
+        accordian.find('.faq-accordion-head').on('click', function () {
+            jQuery(this).parent().find(".faq-accordion-head").removeClass('open close');
+            jQuery(this).removeClass('open').addClass('close');
+            accordian.find('.faq-accordion-body').slideUp();
+            if (!jQuery(this).next().is(':visible')) {
+                jQuery(this).removeClass('close').addClass('open');
+                jQuery(this).next().slideDown();
+            }
+        });
+    }); 
+{% endjavascript %}
+

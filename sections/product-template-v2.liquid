@@ -1,0 +1,1697 @@
+{% render 'loading-spinner' %}
+   <link
+    rel="stylesheet"
+      href="{{ 'custom.css' | asset_url }}"
+      type="text/css">
+<style>
+  .grid {
+    display: inherit;
+}
+  .product-template__variation-radio-item div[data-option='Shipping Included'] {
+    display: none;
+}
+
+</style>
+
+{% if product.tags contains '360' or 'v360' %}
+<script>
+  	(function(s,i,r,v){
+      v = i.createElement(r); v.async=0;
+      v.src= 'https://scripts.sirv.com/sirv.js';
+      i.getElementsByTagName(r)[0].parentNode.appendChild(v);
+	})(window, document, 'script');
+</script>
+    <style>
+      .MTGallery  {
+        display: none;
+      }
+      .MagicZoomPlus  {
+        display: none!important;
+      }
+      #SirvIcon {
+        display: none;
+      }
+    </style>
+{% endif %}
+
+
+<div class="product-v2 product-template__container page-width"
+  id="ProductSection-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="product"
+  data-enable-history-state="true"
+  data-ajax-enabled="{{ settings.enable_ajax }}"
+>
+<div class="product-template__breadcrumbs-wrapper">
+  {% render 'breadcrumbs' %}
+</div>
+  
+  {% comment %}
+    Get first variant, or deep linked one
+  {% endcomment %}
+  {% liquid assign current_variant = product.selected_or_first_available_variant
+    assign product_image_zoom_size = '1024x1024'
+    assign product_image_scale = '2'
+    assign enable_image_zoom = section.settings.enable_image_zoom
+    assign compare_at_price = current_variant.compare_at_price
+    assign price = current_variant.price
+    case section.settings.media_size
+      when 'small'
+        assign product_media_width = 'medium-up--one-third'
+        assign product_description_width = 'medium-up--two-thirds'
+        assign height = 345
+      when 'medium'
+        assign product_media_width = 'medium-up--one-half'
+        assign product_description_width = 'medium-up--one-half'
+        assign height = 530
+      when 'large'
+        assign product_media_width = 'medium-up--two-thirds'
+        assign product_description_width = 'medium-up--one-third'
+        assign height = 720
+      when 'full'
+        assign product_media_width = ''
+        assign product_description_width = ''
+        assign height = 1090
+        assign enable_image_zoom = false
+    endcase %}
+  
+  <div class="p_info mobile">
+    <h1 class="product-single__title">{{ product.title }}</h1>
+  
+    <script>window.performance.mark('debut:product:title_visible');</script>
+
+    <div style="display:flex;">
+      <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+      <a href="#form_{{ product.id }}" class="open-write-review" style="text-decoration:underline;padding-left:15px;">Write a Review</a>
+  </div>
+
+  <script>
+    document.getElementsByClassName('open-write-review')[0].addEventListener('click', function () {
+      document.getElementsByClassName('spr-form')[0].style.display='block';;
+    });
+  </script>
+
+  <div class="product__price affirm-price-container">
+    {% render 'product-price', variant: current_variant, show_vendor: section.settings.show_vendor %}
+  </div>
+
+  {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+    <div class="product__policies rte" data-product-policies>
+      {%- if shop.taxes_included -%}
+        {{ 'products.product.include_taxes' | t }}
+      {%- endif -%}
+      {%- if shop.shipping_policy.body != blank -%}
+        {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="shoppay"></div>
+
+  <div class="shipping-included__wrapper">
+    <span class="shipping-included__text">{{ 'products.product.shipping_included' | t }} | </span>
+    <a id="OpenArrival" href="#" class="shipping-included__link"
+      onClick="ga('send', 'event', 'PDP Arrival Date Click', 'Click', '{{ product.title | escape }}');"> {{ 'products.product.check_arrival_dates' | t }}</a>
+  </div>
+</div>
+  
+  <div class="grid product-single{% if section.settings.enable_payment_button %} product-single--{{ section.settings.media_size }}-media{% endif %}">
+    <div class="timesact-badge grid__item product-single__media-group {{ product_media_width }}{% if section.settings.media_size == 'full' %} product-single__media-group--full{% endif %}" data-product-single-media-group>
+
+      {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+
+      {% for media in product.media %}
+        {% if media.media_type == 'model' %}
+          <div class="view--in-your-space medium-up--four-fifths mobile small---hide">
+            <a href="{{ shop.url }}{{ product.url }}?arqrcode=1&utm_source={{ product.title | escape }}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience">
+              <span class="btn button open_qr_pop">SEE IT IN YOUR PLACE</span>
+            </a>               
+          </div>
+        {% endif %}
+      {% endfor %}  
+  
+      <div class="pswp--gallery slider-for">
+        {% assign pswpCount = 1 %}        
+        {% for media in product.media %}
+          <div class="thumbnails-wrapper pswp-gallery product-single__thumbnails-item product-single__thumbnails-item--{{ section.settings.media_size }} {% if enable_thumbnail_slides == true %} product-single__thumbnails-item-slide{% endif %} {%- if media.media_type == 'video' or media.media_type == 'external_video' -%} product-single__thumbnails-item--video{% endif %} js"{% if enable_thumbnail_slides == true %} {% if video_code != blank %}data-slider-slide-index="{{ forloop.index1 }}"{% else %}data-slider-slide-index="{{ forloop.index0 }}"{% endif %} data-slider-item{% endif %} {% if media.media_type == 'model' %}data-product-media-type-model{% endif %}>
+
+            {% comment %}
+              .pswp-item
+            {% endcomment %}
+            {% if media.media_type == 'image' %}
+              <figure class="pswp-item">
+            {% else %}
+              <div>
+            {% endif %}
+
+                <a href="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"
+                  class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+                  data-thumbnail-id="{{ section.id }}-{{ media.id }}"
+                  {% if media.media_type == 'image' %}data-index="{{ pswpCount }}" data-size="1000x1000"{% endif %}
+                  {% if enable_thumbnail_slides == true %} data-slider-item-link{% endif %}
+                  {% if enable_image_zoom %}data-zoom="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+
+                    {%- capture thumbnailAlt -%}
+                      {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                        {{ 'sections.featured_product.video_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                      {%- elsif media.media_type == 'model' -%}
+                        {{ 'sections.featured_product.model_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                      {%- else -%}
+                        {{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                      {%- endif -%}
+                    {%- endcapture -%}
+
+                    {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                      <div class="product-single__thumbnail--video">
+                        <div class="product-single__thumbnail--video--inner">
+                          <i class="fas fa-video"></i>
+                          <span class="product-single__thumbnail-label--video">Video</span>
+                        </div>
+                      </div>
+                    {% else %}
+                      {%- if media.media_type != 'model' -%}
+                        <img class="product-single__thumbnail-image" src="{{ media.preview_image | img_url: 'master', scale: 2 }}" alt="{{ thumbnailAlt }}">
+                      {% endif %}
+                    {% endif %}
+
+                    {%- if media.media_type == 'model' -%}
+                      <div class="product-single__media" style="padding-top: 100%">
+                        {{ media | model_viewer_tag: image_size: image_size, reveal: 'interaction', toggleable: true, data-model-id: media.id }}
+                      </div>
+                    {%- endif -%}
+                </a>
+
+                {% comment %}
+                  /.pswp-item
+                {% endcomment %}
+                {% if media.media_type == 'image' %}
+                  </figure>
+                  {% assign pswpCount = pswpCount | plus: 1 %}
+                {% else %}
+                  </div>
+                {% endif %}
+          </div>
+        {% endfor %}
+
+        {% if product.metafields.custom.gallery_video %}
+          <div class="product-single__thumbnails-item product-single__thumbnails-item--youtube product-single__thumbnails-item--medium  product-single__thumbnails-item-slide product-single__thumbnails-item--video js" data-slider-slide-index="0" data-slider-item>
+            <div class="text-link play-video-modal" style="cursor: pointer;" onClick="ga('send', 'event', 'PDP Watched Video', 'Click', '{{product.title | escape}}');">
+              <div class="product-single__thumbnail--video">
+                <div class="product-single__thumbnail--video--inner" style="background-size: cover; background-position: center; background-image: url({{ product.media[0].preview_image | img_url: 'master', scale: 2 }})">
+                  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);"></div>
+                  <i class="fa fa-play text-white fa-5x" style="position: relative"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+
+      <noscript>
+        {% capture product_image_size %}{{ height }}x{% endcapture %}
+        <img src="{{ featured_media | img_url: product_image_size, scale: product_image_scale }}" alt="{{ featured_media.alt }}" id="FeaturedMedia-{{ section.id }}" class="product-featured-media" style="max-width: {{ height }}px;">
+      </noscript>
+
+      {% assign first_3d_model = product.media | where: "media_type", "model" | first %}
+
+      {%- if first_3d_model -%}
+        <button
+          aria-label="{{ 'products.product.view_in_space_label' | t }}"
+          class="product-single__view-in-space"
+          data-shopify-xr
+          data-shopify-model3d-id="{{ first_3d_model.id }}"
+          data-shopify-title="{{ product.title | escape }}"
+          data-shopify-xr-hidden
+          onClick="ga('send', 'event', 'AR Experience', 'View In Space', '{{ product.title | escape }}');"
+        >
+          {% render 'icon-3d-badge-full-color' %}<span class='product-single__view-in-space-text'>{{ 'products.product.view_in_space' | t }}</span>
+        </button>
+      {%- endif -%}
+
+
+      {% if product.media.size > 1 %}
+        {% if product.media.size > 4 %}
+          {%- assign enable_thumbnail_slides = false -%}
+        {% endif %}
+
+        <div data-thumbnail--slider>
+          <div class="thumbnails-wrapper{% if enable_thumbnail_slides == true %} slider-active{% endif %}" data-slider>
+            {% if enable_thumbnail_slides == true %}
+              <button type="button" class="btn btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__prev thumbnails-slider__prev--{{ section.id }}" data-slider-button>
+                {% render 'icon-chevron-left' %}
+                <span class="icon__fallback-text">{{ 'sections.slideshow.previous_slide' | t }}</span>
+              </button>
+            {% endif %}
+
+            <ul class="slider-nav product-single__thumbnails product-single__thumbnails-{{ section.id }}" data-slider-container>
+              {% for media in product.media %}
+                <li class="product-single__thumbnails-item product-single__thumbnails-item--{{ section.settings.media_size }} {% if enable_thumbnail_slides == true %} product-single__thumbnails-item-slide{% endif %} {%- if media.media_type == 'video' or media.media_type == 'external_video' -%} product-single__thumbnails-item--video{% endif %} js"{% if enable_thumbnail_slides == true %} {% if product.metafields.custom.gallery_video != '' %}data-slider-slide-index="{{ forloop.index1 }}"{% else %}data-slider-slide-index="{{ forloop.index0 }}"{% endif %} data-slider-item{% endif %}>
+                    <div>
+                      <a 
+                        class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+                        {% if enable_thumbnail_slides == true %} data-slider-item-link{% endif %}
+                        {% if enable_image_zoom %}data-zoom="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+
+                          {%- capture thumbnailAlt -%}
+                            {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                              {{ 'sections.featured_product.video_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                            {%- elsif media.media_type == 'model' -%}
+                              {{ 'sections.featured_product.model_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                            {%- else -%}
+                              {{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: media.alt | escape }}
+                            {%- endif -%}
+                          {%- endcapture -%}
+
+                          {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                            <div class="product-single__thumbnail--video">
+                              <div class="product-single__thumbnail--video--inner">
+                                <i class="fas fa-video"></i>
+                                <span class="product-single__thumbnail-label--video">Video</span>
+                              </div>
+                            </div>
+                          {% else %}
+                            <img class="product-single__thumbnail-image" src="{{ media.preview_image | img_url: '110x110', scale: 2 }}" alt="{{ thumbnailAlt }}">
+                          {% endif %}
+
+                          {%- if media.media_type == 'model' -%}
+                            <div class="product-single__thumbnail-badge">
+                              {% render 'icon-3d-badge-full-color' %}
+                            </div>
+                          {%- endif -%}
+                      </a>
+                    </div>
+                </li>
+              {% endfor %}
+
+              {% if product.metafields.custom.gallery_video != blank %}
+                <li class="product-single__thumbnails-item product-single__thumbnails-item--youtube product-single__thumbnails-item--medium  product-single__thumbnails-item-slide product-single__thumbnails-item--video js" data-slider-slide-index="0" data-slider-item>
+                  <div class="text-link" onClick="ga('send', 'event', 'PDP Watched Video', 'Click', '{{product.title | escape}}');">
+                    <div class="product-single__thumbnail--video">
+                      <div class="product-single__thumbnail--video--inner" style="background-size: cover; background-position: center; background-image: url({{ product.media[0].preview_image | img_url: 'master', scale: 2 }})">
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);"></div>
+                        <i class="fa fa-play text-white" style="position: relative"></i>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endif %}
+              
+            </ul>
+        
+            {% if enable_thumbnail_slides == true %}
+              <button type="button" class="btn btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__next thumbnails-slider__next--{{ section.id }}" data-slider-button data-slider-button-next>
+                {% render 'icon-chevron-right' %}
+                <span class="icon__fallback-text">{{ 'sections.slideshow.next_slide' | t }}</span>
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if section.settings.show_share_buttons %}
+          {% render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product.featured_media %}
+        {% endif %}
+
+    <div class="trust_img desktop"> 
+
+      <div class="md:flex w-full justify-center items-center px-12 md:px-4 md:py-8 py-2 hidden">
+            {% if section.settings.include_protect_certification_icon %}<img loading="lazy" width="100" height="100" class="protect lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/Pro-Tect-burnt-orange.png?v=1679676271">{% endif %}
+            {% if section.settings.include_5year_icon %}<img loading="lazy" width="100" height="100" class="warrenty lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/5-year-warrenty.png?v=1679676271">{% endif %}
+            {% if section.settings.include_guided_assembly_icon %}<img loading="lazy" width="100" height="100" class="assembly lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/guided-assembly.png?v=1679676271">{% endif %}
+          </div>
+
+    </div>
+
+      
+    </div>
+
+    
+<div class="grid__item {{ product_description_width }}">
+<div class="product-single__meta">
+
+
+  <div class="product-info-desktop desktop">
+<h1 class="product-single__title">{{ product.title }}</h1>
+
+
+  <script>window.performance.mark('debut:product:title_visible');</script>
+
+          <div style="display:flex;">
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+          <a href="#form_{{ product.id }}" class="open-write-review" style="text-decoration:underline;padding-left:15px;">Write a Review</a>
+        </div>
+
+    <div class="flex">
+      {%- if product.available == false -%}
+        <div class="uppercase text-xs font-medium pr-4">Out of stock</div> 
+      {%- endif -%}
+      {%- if product.tags contains 'new arrival' -%}
+        <div class="uppercase text-xs font-medium pr-4">New Arrival</div> 
+      {%- endif -%}
+      {%- if product.tags contains 'Best Seller' or product.tag contains 'Top Seller' -%}
+        <div class="uppercase text-xs font-medium">Best Seller</div> 
+      {%- endif -%}
+    </div>
+
+        <script>
+          window.performance.mark('debut:product:title_visible');
+        </script>
+        {% unless product.tags contains 'coming soon' or product.tags contains 'pre-order' %}
+          <div id="BVRRSummaryContainer" class="product-single__inline-ratings"></div>
+        {%- endunless -%}
+
+        {%- if product.tags contains 'coming soon' -%}
+          <div>
+            <h3>Coming Soon!</h3>
+          </div>
+        {%- endif -%}
+        {% unless product.tags contains 'coming soon' %}
+          <div class="product__price affirm-price-container">
+            {% render 'product-price', variant: current_variant, show_vendor: section.settings.show_vendor %}
+          </div>
+
+          {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+            <div class="product__policies rte" data-product-policies>
+              {%- if shop.taxes_included -%}
+                {{ 'products.product.include_taxes' | t }}
+              {%- endif -%}
+              {%- if shop.shipping_policy.body != blank -%}
+                {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+      
+        {%- endunless -%}
+
+  </div>
+    
+
+        {% capture "form_classes" -%}
+          product-form product-form-{{ section.id }}
+          {%- if section.settings.enable_payment_button and product.has_only_default_variant %}
+            product-form--payment-button-no-variants
+          {%- endif -%}
+          {%- if product.available == false %}
+            product-form--variant-sold-out
+          {%- endif -%}
+        {%- endcapture %}
+
+        {% form 'product', product, class: form_classes, novalidate: 'novalidate', data-product-form: '' %}
+          {% comment %}
+          Automatically inserted by Shop Pay Installments theme updater
+          {% endcomment %}
+          
+          {% unless settings.disable_autogenerated_payment_terms %}
+            <div class="desktop">
+            {{ form | payment_terms }}
+            </div>
+            
+          {% endunless %}
+
+
+          <a href="javascript:void()" id="show_ship" style="font-size:0px;padding:0;display:inherit;">...</a>
+         <div class="shipping-included__wrapper desktop">
+            <span class="shipping-included__text">{{ 'products.product.shipping_included' | t }} |
+            </span>
+            <a
+              id="OpenArrival"
+              href="#"
+              class="shipping-included__link"
+              onClick="ga('send', 'event', 'PDP Arrival Date Click', 'Click', '{{product.title | escape}}');">
+              {{ 'products.product.check_arrival_dates' | t }}</a>
+          </div>
+                
+          {% unless product.has_only_default_variant %}
+            <div class="product-template__variation-radios">
+              {% for option in product.options_with_values %}
+                {% unless option.name contains "Shipping" %}
+                  <div class="product-template__variation-radio-item">
+                    {% liquid for variant in product.variants
+                      for value in option.values
+                        unless value == 'Shipping & Assembly Included'
+                          assign assembly = variant.price
+                        endunless
+                      endfor
+                    endfor %}
+                    {% for value in option.values %}
+                      {% unless value == "Shipping Included" %}
+                        <div data-option="{{ value | escape }}" data-price="{{ assembly | money_without_trailing_zeros }}" class="product-template__variation-radio-option">
+                          <div class="variation-radio__circle"></div>
+                          <div class="variation-radio__label">
+                            {{ 'products.product.add_assembly' | t }} (+{{ assembly | minus: price | money_without_trailing_zeros }})
+                          </div>
+                        </div>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                  {% endunless %}
+              {% endfor %}
+            </div>
+
+            {% comment %}
+            Hidden variations form. 
+            Custom radio buttons in above component controls the form and adjusts the price.
+            {% endcomment %}
+            <div class="product-form__controls-group">
+              {% for option in product.options_with_values %}
+                {% unless option.name contains 'Shipping' %}
+                  <div class="selector-wrapper js product-form__item">
+                    <label for="SingleOptionSelector-{{ forloop.index0 }}">
+                        {{ option.name }}
+                    </label>
+                    <select
+                      class="single-option-selector single-option-selector-{{ section.id }} product-form__input"
+                      id="SingleOptionSelector-{{ forloop.index0 }}"
+                      data-index="option{{ forloop.index }}">
+                      {% for value in option.values %}
+                        <option value="{{ value | escape }}"{% if option.selected_value == value %}selected="selected"{% endif %}>{{ value }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endunless %}
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <select
+            name="id"
+            id="ProductSelect-{{ section.id }}"
+            class="product-form__variants no-js">
+            {% for variant in product.variants %}
+              {% unless variant.title contains 'Assembly' %}
+                <option
+                  value="{{ variant.id }}"
+                  {%- if variant == current_variant %}
+                  selected="selected"
+                  {%- endif -%}>
+                  {{ variant.title }}
+                  {%- if variant.available == false %}
+                    - {{ 'products.product.sold_out' | t }}{% endif %}
+                </option>
+              {% endunless %}
+            {% endfor %}
+          </select>
+
+          {% if section.settings.show_quantity_selector %}
+            <div class="product-form__controls-group">
+              <div class="product-form__item">
+                <label for="Quantity-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+                <input
+                  type="number"
+                  id="Quantity-{{ section.id }}"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  pattern="[0-9]*"
+                  class="product-form__input product-form__input--quantity"
+                  data-quantity-input>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="available-sizes pt-4 md:pt-0">{{ 'products.product.available_sizes' | t }}</div>
+          <div class="filters-toolbar__item-child filters-toolbar__item-child--selectable mb-6">
+            <div class="filters-toolbar__input-wrapper select-group ">
+              <select name="size" id="size"
+                class="filters-toolbar__input hidden "
+                aria-describedby="a11y-refresh-page-message a11y-selection-message"
+              >
+                <option value="">{{ product.title }}</option>
+                {% for product_size_variant in product.metafields.custom.size_variations.value %}
+                  <option value="{{ product_size_variant.url }}">
+                    {{ product_size_variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+              {% render 'icon-chevron-down' %}
+            </div>
+          </div>
+
+          <div class="add-to-cart--mobile-only">
+            {% render 'add-to-cart' %}
+          </div>
+
+         <div class="custom_tabs desktop">  
+          <div class="description">{{ product.description }}</div>
+
+          <div
+            class="product-form__error-message-wrapper product-form__error-message-wrapper--hidden{% if section.settings.enable_payment_button %} product-form__error-message-wrapper--has-payment-button{% endif %}"
+            data-error-message-wrapper
+            role="alert">
+            <span class="visually-hidden">{{ 'general.accessibility.error' | t }}</span>
+            {% render 'icon-error' %}
+            <span class="product-form__error-message" data-error-message>{{ 'products.product.quantity_minimum_message' | t }}</span>
+          </div>
+
+          {% render 'add-to-cart' %}
+
+          <div class="accordion">
+              {% if product.metafields.custom.details %}
+                <div class="accordion-header">{{ 'products.product.details' | t }} <span class="accordion-icon">+</span></div>
+                <div class="accordion-content">
+                  {{ product.metafields.custom.details | metafield_tag }}
+                  <br />
+                  <div class="variant-sku">Item #<span id="sku">{{ current_variant.sku }}</span></div>
+                </div>
+              {% endif %}
+              {% if product.metafields.custom.specifications %}
+                <div class="accordion-header">{{ 'products.product.specifications' | t }} <span class="accordion-icon">+</span></div>
+                <div class="accordion-content"><img class="w-full h-auto" alt="" loading="lazy" width="300" height="300" src="https://{{ product.metafields.custom.specifications | metafield_text }}" /></div>
+              {% endif %}
+              {% if product.metafields.assembly.dimensions.value or product.metafields.custom.assembly_content %}
+                <div class="accordion-header">{{ 'products.product.assembly' | t }} <span class="accordion-icon">+</span></div>
+                <div class="accordion-content assembly">
+                  <h3 class="product-instructions__title">{{ 'products.product.supported_assembly' | t }}<sup>®</sup></h3>
+                  {% for media in product.media %}
+                    {% if media.media_type == 'model' %}
+                      <div class="view-in-your-space medium-up--four-fifths small--hide">
+                        {%- comment -%}<a 
+                        class="medium-up--one-third"
+                        data-thumbnail-id="qrcode"
+                        target="_blank"
+                        href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience">{%- endcomment -%}
+                        <div>
+                          <img
+                            loading="lazy"
+                            width="200"
+                            height="200"
+                            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience"
+                            alt="QR Code"
+                            class="one-whole" />
+                        </div>
+                        {%- comment -%}</a>{%- endcomment -%}
+                        <div class="medium-up--two-thirds">
+                          <strong>Tap, Zoom, Rotate</strong> with offical interactive instructions on the BILT<sup>®</sup> app. download now for the fast setup
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if product.metafields.custom.assembly_content %}
+                    {{ product.metafields.custom.assembly_content | metafield_tag }}
+                  {% endif %}
+                  
+                  <div class="flex flex-wrap">
+                    <div class="lg:w-4/12 w-full md:pr-6">
+                      {% comment %}
+                      Assembly Instructions
+                      {% endcomment %}
+                      {% if product.metafields.manuals.english %}
+                        <div class="product-instructions">
+                          <div>
+                            <div class="product-instructions__title mb-2">{{ 'products.product.assembly_instructions' | t }}</div>
+                            <div class="flex">
+                              <img
+                                src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-assembly-instructions-pdf.svg?v=1618590324"
+                                alt="{{ 'products.product.assembly_instructions' | t }}"
+                                class="product-template__assembly-instructions--icon"
+                                style="vertical-align:middle;" />
+                              <div class="flex flex-col">
+                                <a
+                                  target="_blank"
+                                  onClick="ga('send', 'event', 'PDP View Manual English', 'Click', '{{product.title | escape}}');"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.english }}"
+                                  alt="{{ 'products.product.english' | t }}">
+                                  <span>{{ 'products.product.english' | t }}</span>
+                                </a>
+                                {% if product.metafields.manuals.spanish %}
+                                  <a
+                                    target="_blank"
+                                    onClick="ga('send', 'event', 'PDP View Manual Spanish', 'Click', '{{product.title | escape}}');"
+                                    href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.spanish }}"
+                                    alt="{{ 'products.product.spanish' | t }}">
+                                    <span>{{ 'products.product.spanish' | t }}</span>
+                                  </a>
+                                {% endif %}
+                                {% if product.metafields.manuals.french %}
+                                  <a
+                                    target="_blank"
+                                    onClick="ga('send', 'event', 'PDP View Manual French', 'Click', '{{product.title | escape}}');"
+                                    href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.french }}"
+                                    alt="{{ 'products.product.french' | t }}">
+                                    <span>{{ 'products.product.french' | t }}</span>
+                                  </a>
+                                {% endif %}
+                                {% if product.metafields.manuals.german %}
+                                  <a
+                                    target="_blank"
+                                    href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.german }}"
+                                    alt="{{ 'products.product.german' | t }}">
+                                    <span>{{ 'products.product.german' | t }}</span>
+                                  </a>
+                                {% endif %}
+                                {% if product.metafields.manuals.itallian %}
+                                  <a
+                                    target="_blank"
+                                    href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.itallian }}"
+                                    alt="{{ 'products.product.italian' | t }}">
+                                    <span>{{ 'products.product.italian' | t }}</span>
+                                  </a>
+                                {% endif %}
+                                {% if product.metafields.manuals.dutch %}
+                                  <a
+                                    target="_blank"
+                                    href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.dutch }}"
+                                    alt="{{ 'products.product.dutch' | t }}">
+                                    <span>{{ 'products.product.dutch' | t }}</span>
+                                  </a>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    </div>
+                    <div class="lg:w-8/12 w-full">
+                      {% if product.metafields.custom.assembly_content.value %}
+                        {{ product.metafields.assembly.dimensions.value }}
+                      {% endif %}
+                    </div>
+                  </div>
+                
+                    
+                    </div>
+              {% endif %}
+            </div>
+         </div>
+        {% endform %}
+        {% if product.tags contains 'clearance' %}
+          <p style="color:red;">No other discounts apply</p>
+        {% endif %}
+
+
+
+     <div class="custom_tabs mobile">  
+         <div class="description">{{ product.description }}</div>
+
+
+  <div class="trust_img"> 
+
+      <div class="md:flex w-full justify-center items-center px-12 md:px-4 md:py-8 py-2">
+            {% if section.settings.include_protect_certification_icon %}<img class="protect lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/Pro-Tect-burnt-orange.png?v=1679676271">{% endif %}
+            {% if section.settings.include_5year_icon %}<img class="warrenty lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/5-year-warrenty.png?v=1679676271">{% endif %}
+            {% if section.settings.include_guided_assembly_icon %}<img class="assembly lg:w-3/12 w-4/12 mx-4" src="https://cdn.shopify.com/s/files/1/0545/0041/files/guided-assembly.png?v=1679676271">{% endif %}
+          </div>
+
+    </div>
+
+       
+
+         <div class="accordion">
+            {% if product.metafields.custom.details %}
+              <div class="accordion-header">{{ 'products.product.details' | t }} <span class="accordion-icon">+</span></div>
+              <div class="accordion-content">{{ product.metafields.custom.details | metafield_tag }}</div>
+            {% endif %}
+            {% if product.metafields.custom.specifications.value %}
+              <div class="accordion-header">{{ 'products.product.specifications' | t }} <span class="accordion-icon">+</span></div>
+              <div class="accordion-content"><img src="https://{{ product.metafields.custom.specifications | metafield_text }}" /></div>
+            {% endif %}
+            {% if product.assembly.dimensions.value or product.metafields.custom.assembly_content %}
+              <div class="accordion-header">{{ 'products.product.assembly' | t }} <span class="accordion-icon">+</span></div>
+              <div class="accordion-content assembly">
+                <h3 class="product-instructions__title">{{ 'products.product.supported_assembly' | t }}<sup>®</sup></h3>
+
+                {% for media in product.media %}
+                  {% if media.media_type == 'model' %}
+                    <div class="view-in-your-space medium-up--four-fifths small--hide">
+                      {%- comment -%}<a 
+                      class="medium-up--one-third"
+                      data-thumbnail-id="qrcode"
+                      target="_blank"
+                      href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience">{%- endcomment -%}
+                      <div>
+                        <img
+                          src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience"
+                          alt="QR Code"
+                          class="one-whole" />
+                      </div>
+                      {%- comment -%}</a>{%- endcomment -%}
+                      <div class="medium-up--two-thirds">
+                        <p>
+                          <strong>{{ 'products.product.view_in_your_space' | t }}</strong>
+                        </p>
+                        <p>{{ 'products.product.view_in_your_space_extended' | t }}</p>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+
+                {% if product.metafields.custom.assembly_content %}
+                  {{ product.metafields.custom.assembly_content | metafield_tag }}
+                {% endif %}
+                
+                
+                <div class="flex flex-wrap">
+                  <div class="md:w-4/12 w-full md:pr-6">
+                    {% comment %}
+                    Assembly Instructions
+                    {% endcomment %}
+                    {% if product.metafields.manuals.english %}
+                      <div class="product-instructions">
+                        <div>
+                          <div class="product-instructions__title mb-2">{{ 'products.product.assembly_instructions' | t }}</div>
+                          <div class="flex">
+                            <img
+                              src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-assembly-instructions-pdf.svg?v=1618590324"
+                              alt="{{ 'products.product.assembly_instructions' | t }}"
+                              class="product-template__assembly-instructions--icon"
+                              style="vertical-align:middle;" />
+                            <div class="flex flex-col">
+                              <a
+                                target="_blank"
+                                onClick="ga('send', 'event', 'PDP View Manual English', 'Click', '{{product.title | escape}}');"
+                                href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.english }}"
+                                alt="{{ 'products.product.english' | t }}">
+                                <span>{{ 'products.product.english' | t }}</span>
+                              </a>
+                              {% if product.metafields.manuals.spanish %}
+                                <a
+                                  target="_blank"
+                                  onClick="ga('send', 'event', 'PDP View Manual Spanish', 'Click', '{{product.title | escape}}');"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.spanish }}"
+                                  alt="{{ 'products.product.spanish' | t }}">
+                                  <span>{{ 'products.product.spanish' | t }}</span>
+                                </a>
+                              {% endif %}
+                              {% if product.metafields.manuals.french %}
+                                <a
+                                  target="_blank"
+                                  onClick="ga('send', 'event', 'PDP View Manual French', 'Click', '{{product.title | escape}}');"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.french }}"
+                                  alt="{{ 'products.product.french' | t }}">
+                                  <span>{{ 'products.product.french' | t }}</span>
+                                </a>
+                              {% endif %}
+                              {% if product.metafields.manuals.german %}
+                                <a
+                                  target="_blank"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.german }}"
+                                  alt="{{ 'products.product.german' | t }}">
+                                  <span>{{ 'products.product.german' | t }}</span>
+                                </a>
+                              {% endif %}
+                              {% if product.metafields.manuals.itallian %}
+                                <a
+                                  target="_blank"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.itallian }}"
+                                  alt="{{ 'products.product.italian' | t }}">
+                                  <span>{{ 'products.product.italian' | t }}</span>
+                                </a>
+                              {% endif %}
+                              {% if product.metafields.manuals.dutch %}
+                                <a
+                                  target="_blank"
+                                  href="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.dutch }}"
+                                  alt="{{ 'products.product.dutch' | t }}">
+                                  <span>{{ 'products.product.dutch' | t }}</span>
+                                </a>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="md:w-8/12 w-full">
+                    {% if product.metafields.custom.assembly_content.value %}
+                      {{ product.metafields.assembly.dimensions.value }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%}
+      Live region for announcing updated price and availability to screen readers
+      {%- endcomment -%}
+      <p
+        class="visually-hidden"
+        data-product-status
+        aria-live="polite"
+        role="status"></p>
+
+      {%- comment -%}
+      Live region for announcing that the product form has been submitted and the
+      product is in the process being added to the cart
+      {%- endcomment -%}
+      <p
+        class="visually-hidden"
+        data-loader-status
+        aria-live="assertive"
+        role="alert"
+        aria-hidden="true">{{ 'products.product.loader_label' | t }}</p>
+
+      <div
+        class="product-single__store-availability-container"
+        data-store-availability-container
+        data-product-title="{{ product.title | escape }}"
+        data-has-only-default-variant="{{ product.has_only_default_variant }}"
+        data-base-url="{{ shop.url }}{{ routes.root_url }}"></div>
+
+    </div>
+  </div>
+</div>
+
+  {% for media in product.media %}
+    {% if media.media_type == 'model' %}
+      <div class="view_in_place qr_popup" style="display:none;">
+        <div class="popup_inner">
+          <h4> View {{ product.title }} in your place </h4>
+            
+          <div class="steps">
+              <p><span>1.</span> On your phone or tablet, open the camera app.</p>
+              <p><span>2.</span> Point the camera at the QR code.</p>
+              <p><span>3.</span> Tap the banner that appears on your device.</p>
+              <p><span>4.</span> See this product in your space.</p>
+          </div>
+
+          <div class="qr_code">
+            <img 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience"
+              alt="QR Code"
+              class="one-whole"
+            />
+          </div>
+
+          <span href="javascript:void(0)" class="btn button qrclose-button">Close </span>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %} 
+                      
+{% unless product == empty %}
+  <script type="application/json" id="ProductJson-{{ section.id }}">
+    {{ product | json }}
+  </script>
+  <script type="application/json" id="ModelJson-{{ section.id }}">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+{% endunless %}
+
+<script type="text/javascript">
+ window.addEventListener("load", function() {
+  const urlParams = new URLSearchParams(window.location.search);
+    const arqrcode = urlParams.get('arqrcode');
+     if (arqrcode) {
+       var arButton = document.querySelector(".product-single__view-in-space");
+       arButton.click();
+     }
+   });
+</script>
+
+
+<script type="text/javascript">
+    window.addEventListener("load", function() {
+    setTimeout(function() {
+      var getMonthlyInstallment = $("#shopify-installments-content span")
+      var installmentLink = $("button.shopify-installments__learn-more")
+
+      $(installmentLink).text('or as low as')
+    }, 5000);
+
+    var doubleZeroText = $('.product-v2 .price-item.price-item--regular');
+
+    $(doubleZeroText).each(function() {
+      var removeDoubleZero = $(this).text();
+      var updatedText = removeDoubleZero.replace('.00', '');
+      $(this).text(updatedText);
+    });
+  
+    $(document).ready(function() {
+      const productThumbnails = $('.product-single__thumbnails-item');
+      productThumbnails.removeClass('hidden');
+    });
+  });
+
+
+  $( function() {
+    var filterWidth = jQuery('.filters-toolbar__item-child');
+  
+    $( "#size" ).selectmenu();
+
+    $('#size').on('selectmenuchange', function(event, ui) {
+      var newUrl = window.location.pathname;
+      var url = ui.item.value;  
+        window.location.href = url;
+    });
+  
+  });
+ 
+  $(document).ready(function() {
+    $('body').addClass('page__product-v2')
+  
+    const $openModalButton = $('#open-modal');
+    const $closeModalButton = $('#close-modal');
+    const $modalOverlay = $('#modal-overlay');
+    // Hide the modal initially
+    $openModalButton.each(function() {
+      $modalOverlay.hide();
+      
+      // When the open modal button is clicked, show the modal and disable page scrolling
+      $(this).on('click', function() {
+        $modalOverlay.show();
+        $('body').css('overflow', 'hidden');
+        $('body').addClass('overflow', 'hidden');
+      });
+  
+      // When the close modal button is clicked, hide the modal and enable page scrolling
+      $closeModalButton.on('click', function() {
+        $modalOverlay.hide();
+        $('body').css('overflow', 'auto');
+      });
+  
+      // When the user clicks outside the modal or on the overlay, hide the modal and enable page scrolling
+      $modalOverlay.on('click', function(event) {
+        if (event.target.id === 'modal-overlay') {
+          $modalOverlay.hide();
+          $('body').css('overflow', 'auto');
+        }
+      });
+    });
+  });
+
+$(document).ready(function(){
+  $('.accordion-header').click(function(){
+    $(this).toggleClass('active');
+    $(this).next('.accordion-content').slideToggle();
+    
+    // Toggle the plus/minus sign
+    $('.accordion-icon').text('+');
+    if ($(this).hasClass('active')) {
+      $(this).find('.accordion-icon').text('-');
+    }
+
+    // Slide up other accordion items
+      $('.accordion-header').not(this).removeClass('active');
+      $('.accordion-header').not(this).next('.accordion-content').slideUp();
+  });
+
+
+$('.open__qr_pop').click(function() {
+  $('.qr_popup').show();
+  $('body').addClass('qr_popup_enabled');
+});
+
+
+$('.qrclose-button').click(function() {
+  $('.qr_popup').hide();
+  $('body').removeClass('qr_popup_enabled');
+});
+
+$('.product-template__variation-radio-item div[data-option="Shipping & Assembly Included"]').on('click', function(){
+  var $this = $(this);
+
+  var price = $this.data('price');
+  $this.toggleClass('custom_selected');
+  $('span.price-item.price-item--regular').html(price);
+
+    if ($this.hasClass("variation-radio__circle--selected") && !$this.hasClass("custom_selected")) {
+      $('#show_ship').trigger('click');
+    }
+});
+
+$('#show_ship').click(function() {
+  $('.product-template__variation-radio-item div[data-option="Shipping Included"]').trigger('click');
+});
+
+$('.product-template__variation-radio-item div[data-option="Shipping Included"]').click(function() {
+    var price = $(this).data('price');
+    $('span.price-item.price-item--regular').html(price);
+});
+           
+var counter = 0;
+var looper = setInterval(function(){ 
+    counter++;
+    console.log("Counter is: " + counter);
+    $("shopify-payment-terms").clone().appendTo("div.shoppay");
+    if (counter >= 5)
+    {
+        clearInterval(looper);
+    }
+
+}, 1000);
+
+
+  setTimeout(function() {
+    var clonedRatings = $('.product-single__inline-ratings').clone()
+    var mobileTitle = $('.mobile .product-single__title')
+
+    mobileTitle.after(clonedRatings)
+  }, 3000)
+
+  
+});
+
+
+
+</script>
+
+{% if product.metafields.custom.gallery_video %}
+<div class="video-gallery-modal" style="display: none;">
+  <div class="video-gallery-modal-overlay"></div>
+  <div>
+    <video controls poster="{{ product.media[0].preview_image | img_url: "master" }}">
+      <source src="{{ product.metafields.custom.gallery_video }}">
+    </video>
+  </div>`
+</div>
+
+<script>
+
+    const playVideoModal = $('.play-video-modal')
+    const videoGalleryModal = $('.video-gallery-modal')
+    const videoGalleryModalOverlay = $('.video-gallery-modal-overlay')
+    const videoGalleryModalVideo = $('.video-gallery-modal video')
+    playVideoModal.on('click', function() {
+      videoGalleryModal.show()
+    })
+
+    videoGalleryModalOverlay.on('click', function() {
+      videoGalleryModal.hide()
+      videoGalleryModalVideo.trigger('pause')
+    })
+</script>
+
+<style>
+  .video-gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+  }
+  
+  .video-gallery-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .video-gallery-modal video {
+    max-width: 991px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+{% endif %}
+
+{% schema %}
+  {
+    "name": {
+      "cs": "Stránky produktů",
+      "da": "Produktsider",
+      "de": "Produktseiten",
+      "en": "Product pages",
+      "es": "Páginas de productos",
+      "fi": "Tuotesivut",
+      "fr": "Pages de produits",
+      "it": "Pagine di prodotto",
+      "ja": "商品ページ",
+      "ko": "제품 페이지",
+      "nb": "Produktsider",
+      "nl": "Productpagina's",
+      "pl": "Strony produktu",
+      "pt-BR": "Páginas de produtos",
+      "pt-PT": "Páginas de produtos",
+      "sv": "Produktsidor",
+      "th": "หน้าสินค้า",
+      "tr": "Ürün sayfaları",
+      "vi": "Trang sản phẩm",
+      "zh-CN": "产品页面",
+      "zh-TW": "產品頁面"
+    },
+    "settings": [
+     {
+        "type": "checkbox",
+        "id": "include_protect_certification_icon",
+        "label": {
+          "en": "Include Protect Certification Icon",
+          "es": "Incluir icono de certificación de protección",
+          "fr": "Inclure l'icône de certification de protection"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "include_5year_icon",
+        "label": {
+          "en": "Include 5 Year Warrenty Icon",
+          "es": "Incluir icono de garantía de 5 años",
+          "fr": "Inclure l'icône de garantie de 5 ans"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "include_guided_assembly_icon",
+        "label": {
+          "en": "Include Guided Assembly Icon",
+          "es": "Incluir icono de ensamblaje guiado",
+          "fr": "Inclure l'icône d'assemblage guidé"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": {
+          "cs": "Zobrazit výběr množství",
+          "da": "Vis antalsvælger",
+          "de": "Mengenauswahl anzeigen",
+          "en": "Show quantity selector",
+          "es": "Mostrar selector de cantidad",
+          "fi": "Näytä määrän valitsin",
+          "fr": "Afficher le sélecteur de quantité",
+          "it": "Mostra selettore quantità",
+          "ja": "数量セレクターを表示する",
+          "ko": "수량 선택기 표시",
+          "nb": "Vis mengdevelger",
+          "nl": "Hoeveelheidskiezer weergeven",
+          "pl": "Pokaż selektor ilości",
+          "pt-BR": "Exibir seletor de quantidade",
+          "pt-PT": "Mostrar um seletor de quantidade",
+          "sv": "Visa kvantitetsväljare",
+          "th": "แสดงตัวเลือกจำนวน",
+          "tr": "Adet seçiciyi göster",
+          "vi": "Hiển thị hộp chọn số lượng",
+          "zh-CN": "显示数量选择器",
+          "zh-TW": "顯示數量選擇器"
+        },
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": {
+          "cs": "Zobrazit dodavatele",
+          "da": "Vis leverandør",
+          "de": "Lieferanten anzeigen",
+          "en": "Show vendor",
+          "es": "Mostrar proveedor",
+          "fi": "Näytä myyjä",
+          "fr": "Afficher les vendeurs",
+          "it": "Mostra fornitore",
+          "ja": "販売元を表示する",
+          "ko": "공급업체 표시",
+          "nb": "Vis leverandør",
+          "nl": "Leverancier weergeven",
+          "pl": "Pokaż dostawcę",
+          "pt-BR": "Exibir fornecedor",
+          "pt-PT": "Mostrar fornecedor",
+          "sv": "Visa säljare",
+          "th": "แสดงผู้ขาย",
+          "tr": "Satıcıyı göster",
+          "vi": "Hiển thị nhà cung cấp",
+          "zh-CN": "显示厂商",
+          "zh-TW": "顯示廠商"
+        },
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_button",
+        "label": {
+          "cs": "Zobrazit dynamické tlačítko pokladny",
+          "da": "Vis dynamisk betalingsknap",
+          "de": "Dynamischen Checkout Button anzeigen",
+          "en": "Show dynamic checkout button",
+          "es": "Mostrar botón de pago dinámico",
+          "fi": "Näytä dynaaminen kassapainike",
+          "fr": "Afficher le bouton de paiement dynamique",
+          "it": "Mostra pulsante di check-out dinamico",
+          "ja": "動的チェックアウトボタンを表示する",
+          "ko": "동적 결제 버튼 표시",
+          "nb": "Vis dynamisk knapp for å gå til kassen",
+          "nl": "Dynamische betaalknop weergeven",
+          "pl": "Pokaż dynamiczny przycisk realizacji zakupu",
+          "pt-BR": "Exibir botão de checkout dinâmico",
+          "pt-PT": "Mostrar o botão dinâmico de finalização da compra",
+          "sv": "Visa dynamiska utcheckningsknappar",
+          "th": "แสดงปุ่มชำระเงินแบบไดนามิก",
+          "tr": "Dinamik ödeme düğmesini göster",
+          "vi": "Hiển thị nút thanh toán nhanh",
+          "zh-CN": "显示动态结账按钮",
+          "zh-TW": "顯示動態結帳按鈕"
+        },
+        "info": {
+          "cs": "Každý zákazník uvidí platební metodu, kterou ze všech metod dostupných v obchodě (například PayPal nebo Apple Pay) nejvíce preferuje. [Další informace](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "da": "Den enkelte kunde vil se sin foretrukne betalingsmetode blandt dem, der er tilgængelige i din butik, f.eks. PayPal eller Apple Pay. [Få mere at vide](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "de": "Jeder Kunde sieht seine bevorzugte Zahlungsmethode aus den in deinem Shop verfügbaren Zahlungsmethoden wie PayPal oder Apple Pay. [Mehr Informationen](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "en": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "es": "Cada cliente verá su forma de pago preferida entre las disponibles en tu tienda, como PayPal o Apple Pay. [Más información](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "fi": "Kukin asiakas näkee ensisijaisen valintansa kauppasi tarjoamista maksutavoista, esim. PayPal tai Apple Pay. [Lisätietoja](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "fr": "Chaque client verra son moyen de paiement préféré parmi ceux qui sont proposés sur votre boutique, tels que PayPal ou Apple Pay. [En savoir plus](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "it": "Ogni cliente vedrà il suo metodo di pagamento preferito tra quelli disponibili nel tuo negozio, come PayPal o Apple Pay. [Maggiori informazioni](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "ja": "PayPalやApple Payなど、ストアで利用可能な希望の決済方法がお客様に表示されます。[詳しくはこちら](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "ko": "각 고객은 PayPal 또는 Apple Pay와 같이 스토어에서 사용 가능한 지불 방법을 확인할 수 있습니다. [자세히 알아보기](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "nb": "Hver enkelt kunde vil se sin foretrukne betalingsmåte blant de som er tilgjengelig i butikken din, som PayPal eller Apple Pay. [Finn ut mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "nl": "Elke klant ziet zijn of haar beschikbare voorkeursmethode om af te rekenen, zoals PayPal of Apple Pay. [Meer informatie](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "pl": "Każdy klient zobaczy swoją preferowaną metodę płatności wśród metod dostępnych w Twoim sklepie, np. PayPal lub Apple Pay. [Dowiedz się więcej](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "pt-BR": "Cada cliente verá a forma de pagamento preferencial dele dentre as disponíveis na loja, como PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "pt-PT": "Cada cliente irá ver o seu método de pagamento preferido entre os disponíveis na loja, como o PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "sv": "Varje kund kommer att se den föredragna betalningsmetoden från de som finns tillgängliga i din butik, till exempel PayPal eller Apple Pay. [Läs mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "th": "ลูกค้าแต่ละรายจะเห็นวิธีการชำระเงินที่ต้องการจากวิธีที่ใช้ได้ในร้านค้าของคุณ เช่น PayPal หรือ Apple Pay [ดูข้อมูลเพิ่มเติม](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "tr": "Her müşteri, mağazanız sunulanlar arasından tercih ettikleri ödeme yöntemini görür (ör. PayPal veya Apple Pay). [Daha fazla bilgi edinin](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "vi": "Mỗi khách hàng sẽ thấy phương thức thanh toán ưu tiên trong những phương thức thanh toán được hỗ trợ tại cửa hàng như PayPal hoặc Apple Pay. [Tìm hiểu thêm](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "zh-CN": "每位客户都可在您商店提供的付款方式中看到他们的首选付款方式，例如 PayPal 或 Apple Pay。[了解详细信息](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+          "zh-TW": "每位顧客都可以在您商店內開放使用的付款方式中看見他們偏好使用的方式，如 PayPal、Apple Pay 等。[深入瞭解](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": {
+          "cs": "Zobrazit tlačítka pro sdílení na sociálních sítích",
+          "da": "Vis knapper til deling på sociale medier",
+          "de": "Buttons für Social Media anzeigen",
+          "en": "Show social sharing buttons",
+          "es": "Mostrar botones para compartir en redes sociales",
+          "fi": "Näytä sosiaalisen median jakamispainikkeet",
+          "fr": "Affichez les boutons de partage sur les médias sociaux",
+          "it": "Mostra i pulsanti per la condivisione sui social",
+          "ja": "ソーシャルメディアでの共有ボタンを表示する",
+          "ko": "소셜 공유 버튼 표시",
+          "nb": "Vis knapper for deling på sosiale medier",
+          "nl": "Knoppen voor sociaal delen weergeven",
+          "pl": "Pokaż przyciski udostępniania w mediach społecznościowych",
+          "pt-BR": "Exibir botões de compartilhamento em redes sociais",
+          "pt-PT": "Mostrar botões de partilha nas redes sociais",
+          "sv": "Visa knappar för delning i sociala medier",
+          "th": "แสดงปุ่มสำหรับแชร์ลงโซเชียล",
+          "tr": "Sosyal medya paylaşım düğmelerini göster",
+          "vi": "Hiển thị nút chia sẻ qua mạng xã hội",
+          "zh-CN": "显示社交分享按钮",
+          "zh-TW": "顯示社群分享按鈕"
+        },
+        "default": true
+      }, {
+        "type": "text",
+        "id": "shipping-included-title",
+        "label": {
+          "en": "Shipping Included Title",
+          "es": "Envío Incluido Título",
+          "fr": "Expédition incluse Titre"
+        }
+      }, {
+        "type": "header",
+        "content": {
+          "cs": "Multimédia",
+          "da": "Medie",
+          "de": "Medien",
+          "en": "Media",
+          "es": "Elementos multimedia",
+          "fi": "Media",
+          "fr": "Support multimédia",
+          "it": "Media",
+          "ja": "メディア",
+          "ko": "미디어",
+          "nb": "Medier",
+          "nl": "Media",
+          "pl": "Multimedia",
+          "pt-BR": "Mídia",
+          "pt-PT": "Multimédia",
+          "sv": "Media",
+          "th": "สื่อ",
+          "tr": "Medya",
+          "vi": "Nội dung đa phương tiện",
+          "zh-CN": "媒体",
+          "zh-TW": "媒體"
+        },
+        "info": {
+          "cs": "Další informace o [typech multimédií](https://help.shopify.com/manual/products/product-media)",
+          "da": "Få mere at vide om [media types](https://help.shopify.com/manual/products/product-media)",
+          "de": "Mehr Informationen über [Medientypen ](https://help.shopify.com/manual/products/product-media)",
+          "en": "Learn more about [media types](https://help.shopify.com/manual/products/product-media)",
+          "es": "Más información sobre [tipos de archivos multimedia](https://help.shopify.com/manual/products/product-media)",
+          "fi": "Lue lisää [mediatyypeistä](https://help.shopify.com/manual/products/product-media)",
+          "fr": "En savoir plus sur les [types de supports multimédia](https://help.shopify.com/manual/products/product-media)",
+          "it": "Scopri di più sulle [tipologie di file multimediali](https://help.shopify.com/manual/products/product-media)",
+          "ja": "[メディアのタイプ](https://help.shopify.com/manual/products/product-media) について詳しくはこちら",
+          "ko": "[미디어 유형](https://help.shopify.com/manual/products/product-media)에 대해 자세히 알아보기",
+          "nb": "Lær mer om [medietyper](https://help.shopify.com/manual/products/product-media)",
+          "nl": "Meer informatie over [mediatypen](https://help.shopify.com/manual/products/product-media)",
+          "pl": "Dowiedz się więcej o [typach multimediów](https://help.shopify.com/manual/products/product-media)",
+          "pt-BR": "Saiba mais sobre [tipos de mídia](https://help.shopify.com/manual/products/product-media)",
+          "pt-PT": "Saiba mais sobre [media types](https://help.shopify.com/manual/products/product-media)",
+          "sv": "Läs mer om [mediatyper](https://help.shopify.com/manual/products/product-media)",
+          "th": "ดูข้อมูลเพิ่มเติมเกี่ยวกับ [ประเภทของสื่อ](https://help.shopify.com/manual/products/product-media)",
+          "tr": "[Medya türleri](https://help.shopify.com/manual/products/product-media) hakkında daha fazla bilgi edinin",
+          "vi": "Tìm hiểu thêm về [loại phương tiện](https://help.shopify.com/manual/products/product-media)",
+          "zh-CN": "详细了解[媒体类型](https://help.shopify.com/manual/products/product-media)",
+          "zh-TW": "深入瞭解 [媒體類型](https://help.shopify.com/manual/products/product-media)"
+        }
+      }, {
+        "type": "select",
+        "id": "media_size",
+        "label": {
+          "cs": "Velikost",
+          "da": "Størrelse",
+          "de": "Größe",
+          "en": "Size",
+          "es": "Tamaño",
+          "fi": "Koko",
+          "fr": "Taille",
+          "it": "Dimensione",
+          "ja": "サイズ",
+          "ko": "사이즈",
+          "nb": "Størrelse",
+          "nl": "Grootte",
+          "pl": "Rozmiar",
+          "pt-BR": "Tamanho",
+          "pt-PT": "Tamanho",
+          "sv": "Storlek",
+          "th": "ขนาด",
+          "tr": "Boyut",
+          "vi": "Cỡ",
+          "zh-CN": "大小",
+          "zh-TW": "尺寸"
+        },
+        "options": [
+          {
+            "value": "small",
+            "label": {
+              "cs": "Malá",
+              "da": "Lille",
+              "de": "Klein",
+              "en": "Small",
+              "es": "Pequeño",
+              "fi": "Pieni",
+              "fr": "Petit",
+              "it": "Piccolo",
+              "ja": "スモール",
+              "ko": "스몰",
+              "nb": "Liten",
+              "nl": "Klein",
+              "pl": "Mały",
+              "pt-BR": "Pequeno",
+              "pt-PT": "Pequeno",
+              "sv": "Liten",
+              "th": "เล็ก",
+              "tr": "Küçük",
+              "vi": "Nhỏ",
+              "zh-CN": "小",
+              "zh-TW": "小型"
+            }
+          }, {
+            "value": "medium",
+            "label": {
+              "cs": "Střední",
+              "da": "Medium",
+              "de": "Mittel",
+              "en": "Medium",
+              "es": "Mediano",
+              "fi": "Keskisuuri",
+              "fr": "Moyenne",
+              "it": "Medio",
+              "ja": "中",
+              "ko": "보통",
+              "nb": "Middels",
+              "nl": "Gemiddeld",
+              "pl": "Średni",
+              "pt-BR": "Médio",
+              "pt-PT": "Médio",
+              "sv": "Medium",
+              "th": "ปานกลาง",
+              "tr": "Orta",
+              "vi": "Trung bình",
+              "zh-CN": "中等",
+              "zh-TW": "中等"
+            }
+          }, {
+            "value": "large",
+            "label": {
+              "cs": "Velká",
+              "da": "Stor",
+              "de": "Groß",
+              "en": "Large",
+              "es": "Grande",
+              "fi": "Suuri",
+              "fr": "Grande",
+              "it": "Grande",
+              "ja": "大",
+              "ko": "라지",
+              "nb": "Stor",
+              "nl": "Groot",
+              "pl": "Duży",
+              "pt-BR": "Grande",
+              "pt-PT": "Grande",
+              "sv": "Stor",
+              "th": "ใหญ่",
+              "tr": "Büyük",
+              "vi": "Lớn",
+              "zh-CN": "大",
+              "zh-TW": "大型"
+            }
+          }, {
+            "value": "full",
+            "label": {
+              "cs": "Plná šířka",
+              "da": "Fuld bredde",
+              "de": "Volle Breite",
+              "en": "Full-width",
+              "es": "Ancho completo",
+              "fi": "Täysi leveys",
+              "fr": "Pleine largeur",
+              "it": "Intera larghezza",
+              "ja": "全幅",
+              "ko": "전체 폭",
+              "nb": "Full bredde",
+              "nl": "Volledige breedte",
+              "pl": "Pełna szerokość",
+              "pt-BR": "Largura completa",
+              "pt-PT": "Largura completa",
+              "sv": "Full bredd",
+              "th": "เต็มความกว้าง",
+              "tr": "Tam genişlikli",
+              "vi": "Độ rộng đầy đủ",
+              "zh-CN": "全宽",
+              "zh-TW": "完整寬度"
+            }
+          }
+        ],
+        "default": "medium"
+      }, {
+        "type": "checkbox",
+        "id": "enable_image_zoom",
+        "label": {
+          "cs": "Povolit zvětšení obrázku",
+          "da": "Aktivér billedzoom",
+          "de": "Foto-Zoom zulassen",
+          "en": "Enable image zoom",
+          "es": "Habilitar zoom de imagen",
+          "fi": "Ota kuvan zoomaus käyttöön",
+          "fr": "Activer le zoom d'image",
+          "it": "Abilita lo zoom dell'immagine",
+          "ja": "画像ズームを有効にする",
+          "ko": "이미지 확대 사용",
+          "nb": "Aktiver bildezoom",
+          "nl": "Inzoomen op afbeelding inschakelen",
+          "pl": "Włącz powiększenie obrazu",
+          "pt-BR": "Habilitar o zoom da imagem",
+          "pt-PT": "Ativar o zoom da imagem",
+          "sv": "Aktivera bildzoom",
+          "th": "เปิดใช้การซูมภาพ",
+          "tr": "Görsel yakınlaştırmayı etkinleştir",
+          "vi": "Bật thu phóng hình ảnh",
+          "zh-CN": "启用图片缩放",
+          "zh-TW": "啟用圖片縮放"
+        },
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "enable_video_looping",
+        "label": {
+          "cs": "Povolit smyčky videa",
+          "da": "Aktivér looping af videoer",
+          "de": "Videoschleife aktivieren",
+          "en": "Enable video looping",
+          "es": "Habilitar la reproducción de video en bucle",
+          "fi": "Ota käyttöön videosilmukka",
+          "fr": "Activer le bouclage de la vidéo",
+          "it": "Abilita la riproduzione in loop dei video",
+          "ja": "ビデオのループを有効にする",
+          "ko": "동영상 루프",
+          "nb": "Aktiver løkkeavspilling av video",
+          "nl": "Video-looping inschakelen",
+          "pl": "Włącz zapętlanie wideo",
+          "pt-BR": "Habilitar loop de vídeo",
+          "pt-PT": "Ativar ciclo de vídeo",
+          "sv": "Aktivera video-loopning",
+          "th": "เปิดใช้การวนซ้ำวิดีโอ",
+          "tr": "Video döngüsünü etkinleştir",
+          "vi": "Bật vòng lặp video",
+          "zh-CN": "启用视频循环",
+          "zh-TW": "啟用影片循環功能"
+        },
+        "default": false
+      }, {
+        "type": "text",
+        "id": "jumbotron-title",
+        "label": {
+          "en": "Add a title.",
+          "es": "Añade un titulo.",
+          "fr": "Ajoutez un titre."
+        }
+      }, {
+        "type": "checkbox",
+        "id": "show_assembly_option",
+        "label": {
+          "en": "Show assembly included as an option?",
+          "es": "¿Mostrar montaje incluido como opción?",
+          "fr": "Afficher l'assemblage inclus en option?"
+        }
+      }, {
+        "type": "checkbox",
+        "id": "jumbotron-size",
+        "label": {
+          "en": "Make jumbotron smaller",
+          "es": "Hacer jumbotron más pequeño",
+          "fr": "Rendre le jumbotron plus petit"
+        }
+      }, {
+        "type": "richtext",
+        "id": "jumbotron-rte",
+        "label": {
+          "en": "Add some content.",
+          "es": "Agrega algo de contenido.",
+          "fr": "Ajoutez du contenu."
+        }
+      }, {
+        "type": "text",
+        "id": "jumbotron-button-text",
+        "label": {
+          "en": "Add a button label.",
+          "es": "Agrega una etiqueta de botón.",
+          "fr": "Ajoutez une étiquette de bouton."
+        }
+      }, {
+        "type": "url",
+        "id": "jumbotron-button-link",
+        "label": {
+          "en": "Add a button link.",
+          "es": "Agrega un enlace de botón.",
+          "fr": "Ajoutez un lien de bouton."
+        }
+      }, {
+        "type": "image_picker",
+        "id": "jumbotron-image",
+        "label": {
+          "en": "Add an image.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      }, {
+        "type": "image_picker",
+        "id": "jumbotron-bg-image",
+        "label": {
+          "en": "Add a background image.",
+          "es": "Agrega una imagen de fondo.",
+          "fr": "Ajoutez une image d'arrière-plan."
+        }
+      }, {
+        "type": "text",
+        "id": "content-hub-blocks-title",
+        "label": "Gazebo Content Hub Blocks Title"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "content-hub-blocks",
+        "name": "content-hub-blocks",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": {
+              "en": "Image",
+              "es": "Imagen",
+              "fr": "Image"
+            }
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": {
+              "en": "Title",
+              "es": "Título",
+              "fr": "Titre"
+            }
+          },
+          {
+            "type": "textarea",
+            "id": "description",
+            "label": {
+              "en": "Description",
+              "es": "Descripción",
+              "fr": "La description"
+            }
+          },
+          {
+            "type": "text",
+            "id": "link_text",
+            "label": {
+              "en": "Link Text",
+              "es": "Texto del enlace",
+              "fr": "Texte du lien"
+            }
+          }, {
+            "type": "url",
+            "id": "link_url",
+            "label": {
+              "en": "Link URL",
+              "es": "URL del enlace",
+              "fr": "URL du lien"
+            }
+          },
+            {
+        "type": "checkbox",
+        "id": "include_protect_certification_icon",
+        "label": {
+          "en": "Include Protect Certification Icon",
+          "es": "Incluir icono de certificación de protección",
+          "fr": "Inclure l'icône de certification de protection"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "include_5year_icon",
+        "label": {
+          "en": "Include 5 Year Warrenty Icon",
+          "es": "Incluir icono de garantía de 5 años",
+          "fr": "Inclure l'icône de garantie de 5 ans"
+        },
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "include_guided_assembly_icon",
+        "label": {
+          "en": "Include Guided Assembly Icon",
+          "es": "Incluir icono de ensamblaje guiado",
+          "fr": "Inclure l'icône d'assemblage guidé"
+        },
+        "default": true
+      }
+        ]
+      }
+    ]
+  }
+{% endschema %}

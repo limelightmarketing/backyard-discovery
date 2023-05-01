@@ -1,0 +1,98 @@
+{% schema %}
+  {
+    "name": "Title Block",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": {
+          "en": "Product Content Title",
+          "es": "Envío Incluido Título",
+          "fr": "Expédition incluse Titre"
+        }
+      }, {
+        "type": "richtext",
+        "id": "content",
+        "default": "<p>Add some content.</p>",
+        "label": {
+          "en": "Add some content.",
+          "es": "Agrega algo de contenido.",
+          "fr": "Ajoutez du contenu."
+        }
+      }, {
+        "type": "select",
+        "id": "top_spacing",
+        "label": "Top spacing",
+        "options": [
+          {
+            "value": "pt-0",
+            "label": "None"
+          },
+          {
+            "value": "pt-4 md:pt-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pt-8 md:pt-12",
+            "label": "Small"
+          },
+          {
+            "value": "pt-16 md:pt-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pt-24 md:pt-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pt-8 md:pt-12",
+        "info": "The spacing above the section"
+      },
+      {
+        "type": "select",
+        "id": "bottom_spacing",
+        "label": "Bottom spacing",
+        "options": [
+          {
+            "value": "pb-0",
+            "label": "None"
+          },
+          {
+            "value": "pb-4 md:pb-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pb-8 md:pb-12",
+            "label": "Small"
+          },
+          {
+            "value": "pb-16 md:pb-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pb-24 md:pb-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pb-8 md:pb-12",
+        "info": "The spacing below the section"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Title Block"
+      }
+    ]
+  }
+{% endschema %}
+
+{%- if section.settings.title != blank -%}
+  <div class="container mx-auto {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }} px-4">
+    <div class="md:w-6/12 w-full text-center mx-auto">
+      <div class="section-header text-center">
+        <h2 class="bold">{{ section.settings.title | escape }}</h2>
+      </div>
+      <div>{{ section.settings.content }}</div>
+    </div>
+  </div>
+{%- endif -%}

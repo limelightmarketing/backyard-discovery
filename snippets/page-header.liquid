@@ -1,0 +1,35 @@
+<section class="page-header">
+  
+  {% if template == 'collection' %}
+
+    <div class="page-header__title h1">
+      {{ 'sections.page_header.collections_title' | t }}
+    </div>
+
+  {% elsif template == 'list-collections' %}
+
+    <h1 class="page-header__title">
+      {{ 'sections.page_header.collections_title' | t }}
+    </h1>
+
+  {% elsif template == 'cart' %}
+
+    <h1 class="page-header__title">
+      {{ 'cart.general.title' | t }}
+    </h1>
+
+  {% elsif template == 'article' %}
+
+    <h1 class="page-header__title">
+      {{ article.title }}
+    </h1>
+
+  {% else %}
+  
+    <h1 class="page-header__title">
+      {{ page.title }}
+    </h1>
+
+  {% endif %}
+
+</section>

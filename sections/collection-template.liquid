@@ -1,0 +1,631 @@
+{% case section.settings.grid %}
+  {% when 2 %}
+    {%- assign max_height = 530 -%}
+  {% when 3 %}
+    {%- assign max_height = 345 -%}
+  {% when 4 %}
+    {%- assign max_height = 345 -%}
+  {% when 5 %}
+    {%- assign max_height = 195 -%}
+{% endcase %}
+
+{% if section.settings.layout == 'grid' %}
+  {%- assign limit = section.settings.grid | times: section.settings.rows -%}
+{% else %}
+  {%- assign limit = 12 -%}
+{% endif %}
+
+{% paginate collection.products by limit %}
+
+<div data-section-id="{{ section.id }}" data-section-type="collection-template">
+
+  {% include 'breadcrumbs' %}
+  
+  <header class="collection-header">
+    {%- assign is_filter_by_available = false -%}
+    {%- if section.settings.tags_enable and collection.all_tags.size > 0 -%}
+      {%- assign is_filter_by_available = true -%}
+    {%- endif -%}
+
+    {% if section.settings.show_collection_image and collection.image %}
+      <div class="collection-hero">
+        <div class="collection-hero__image ratio-container lazyload js"
+             data-bgset="{% include 'bgset', image: collection.image %}"
+             data-sizes="auto"
+             data-parent-fit="cover"
+             data-image-loading-animation
+        ></div>
+        <noscript>
+          <div class="collection-hero__image" style="background-image: url({{ collection.image | img_url: '2048x600', crop: 'top' }});"></div>
+        </noscript>
+        <div class="collection-hero__title-wrapper">
+          <h1 class="collection-hero__title page-width">
+              <span class="visually-hidden">{{ 'collections.general.collection_label' | t }}: </span>
+              {{ collection.title }}
+          </h1>
+        </div>
+      </div>
+      {% if is_filter_by_available == false and section.settings.sort_enable == false %}
+        <div class="page-width">
+          <span class="filters-toolbar__product-count">{{ 'collections.general.items_with_count' | t: count: collection.products_count }}</span>
+        </div>
+      {% endif %}
+      {% if collection.description != blank %}
+        <div class="rte collection-description page-width">
+        {{ collection.description }}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="page-width">
+        <div class="section-header">
+          <div class="section-header__masthead">
+            <div class="collection__legend collection__legend--desktop">
+              <div class="collection__legend-item">
+                  <img class="collection__legend-item__icon" 
+                       src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-shipping-included.svg?v=1617824526" 
+                       alt="{{ 'collections.general.shipping_legend_label' | t }}" />
+                  <span class="collection__legend-item__label">{{ 'collections.general.shipping_legend_label' | t }}</span>
+              </div>
+            </div>
+            <h1 class="collection__title">
+                <span class="visually-hidden">{{ 'collections.general.collection_label' | t }}: </span>
+                {{ collection.title }}
+            </h1>
+          </div>
+          {% if collection.description != blank %}
+            <div class="rte">
+                {% if collection.description contains "<!--ECI: Split-->" %}
+                  {% assign eci_splitted_content = collection.description | split: "<!--ECI: Split-->" %}
+                  <div class="eci-first-content">{{ eci_splitted_content | first }}<a class="eci-read-more-btn" onclick="eciReadMore()" href="javascript:void(0)">Read More</a></div>
+                  <div class="eci-last-content" style="display:none;">{{ eci_splitted_content | last }}<a onclick="eciReadLess()" href="javascript:void(0)">Read Less</a></div>
+                    <script>
+                        function eciReadMore(){
+                          document.querySelector('.eci-last-content').style.display='block';
+                          document.querySelector('.eci-read-more-btn').style.display='none';
+                      }
+                      
+                      function eciReadLess(){
+                          document.querySelector('.eci-last-content').style.display='none';
+                          document.querySelector('.eci-read-more-btn').style.display='initial';
+                      }
+                      </script>
+                  {% else %}
+                {{ collection.description }}
+                {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="collection__legend collection__legend--mobile">
+            <div class="collection__legend-item">
+                <img class="collection__legend-item__icon" 
+                     src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-shipping-included.svg?v=1617824526" 
+                     alt="{{ 'collections.general.shipping_legend_label' | t }}" />
+                <span class="collection__legend-item__label">{{ 'collections.general.shipping_legend_label' | t }}</span>
+            </div>
+          </div>
+
+          {% if is_filter_by_available == false and section.settings.sort_enable == false %}
+            <span class="filters-toolbar__product-count">{{ 'collections.general.items_with_count' | t: count: collection.products_count }}</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if is_filter_by_available or section.settings.sort_enable %}
+      <div class="filters-toolbar-wrapper{% if is_filter_by_available %} filters-toolbar--has-filter{% endif %}">
+        <div class="page-width">
+          <div class="filters-toolbar">
+            <div class="filters-toolbar__item-wrapper">
+              
+              {% assign current_collection_url = collection.url %}
+
+              
+              {% if section.settings.tags_enable %}
+                {% unless collection.all_tags.size == 0 %}
+                  <div class="filters-toolbar__item-child filters-toolbar__item-child--selectable">
+                    <label class="filters-toolbar__label select-label" for="FilterTags">{{ 'collections.filters.title_tags' | t }}</label>
+                    <div class="filters-toolbar__input-wrapper select-group">
+                      <select class="filters-toolbar__input hidden" name="FilterTags" id="FilterTags" aria-describedby="a11y-refresh-page-message a11y-selection-message" data-select-input>
+                        <option value="{{ collection.url }}">{{ 'collections.filters.all_tags' | t }}</option>
+                        {% for tag in collection.all_tags %}
+                          {%- assign new_url = tag | link_to_tag: tag | split: 'href="' | last | split: '"' | first -%}
+                          <option value="{{ new_url }}"{% if current_tags contains tag %} selected="selected"{% endif %}>{{ tag }}</option>
+                        {% endfor %}
+                      </select>
+                      {% include 'icon-chevron-down' %}
+                    </div>
+                  </div>
+                {% endunless %}
+              {% endif %}
+
+              {% if section.settings.sort_enable %}
+                <div class="filters-toolbar__item-child filters-toolbar__item-child--selectable">
+                  {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                  <label class="filters-toolbar__label select-label" for="SortBy">{{ 'collections.sorting.title' | t }}</label>
+                  <div class="filters-toolbar__input-wrapper select-group ">
+                    <select name="sort_by" id="SortBy"
+                      class="filters-toolbar__input hidden "
+                      aria-describedby="a11y-refresh-page-message a11y-selection-message"
+                      data-default-sortby="{{ collection.default_sort_by }}"
+                      data-select-input
+                    >
+                      
+                      {%- for option in collection.sort_options -%}
+                        {% if option.value contains 'manual' %}
+                          <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>Featured</option>
+                        {% endif %}
+                      {%- endfor -%}
+                      
+                      {%- for option in collection.sort_options -%}
+                        {% if option.value contains 'best-selling' %}
+                          <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>Best Selling</option>
+                        {% endif %}
+                      {%- endfor -%}
+                      
+                      {%- for option in collection.sort_options -%}
+                        {% if option.value contains 'price-ascending' %}
+                          <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>Price (low to high)</option>
+                        {% endif %}
+                      {%- endfor -%}
+
+                      {%- for option in collection.sort_options -%}
+                        {% if option.value contains 'price-descending' %}
+                          <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>Price (high to low)</option>
+                        {% endif %}
+                      {%- endfor -%}
+                    
+                    </select>
+                    {% include 'icon-chevron-down' %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </header>
+
+  <div class="page-width" id="Collection">
+    {% if section.settings.layout == 'grid' %}
+      {% case section.settings.grid %}
+      {% when 2 %}
+        {%- assign grid_item_width = 'medium-up--one-half' -%}
+      {% when 3 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-third' -%}
+      {% when 4 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-quarter' -%}
+      {% when 5 %}
+        {%- assign grid_item_width = 'small--one-half medium-up--one-fifth' -%}
+      {% endcase %}
+
+      <ul class="grid grid--uniform{% if collection.products_count > 0 %} grid--view-items{% endif %}">
+        {% for product in collection.products %}
+          <li data-product-handle="{{ product.handle }}" class="grid__item grid__item--{{section.id}} {{ grid_item_width }}">
+            {% include 'product-card-grid', max_height: max_height, product: product, show_vendor: section.settings.show_vendor %}
+          
+          
+  {% comment %}
+{% unless product.has_only_default_variant %}
+   {% for option in product.options_with_values %}
+                {% assign option_position = forloop.index %}
+                <fieldset>
+                  {%- for value in option.values -%}
+                    {% assign variant_needed = null %}
+                    
+{% for variant in product.variants %}
+{% if variant.options contains value %}
+{% assign variant_needed = variant %}
+{% endif %}
+{% endfor %} 
+
+                    
+ {% if option.name == "Slide Color" %}  
+     <label class='withimg' for="SingleOptionSelector-{{ forloop.index0 }}">
+
+      {{ variant_needed.id }}
+   
+            {% if variant_needed.metafields.custom.swatch_image %}
+                 {{variant_needed.metafields.custom.swatch_image | img_tag }}
+            {% else %}
+              {{value}}
+            {% endif %} 
+         </label>
+{% endif %} 
+    {%- endfor -%}
+                </fieldset>
+              {% endfor %}
+            {% endunless %}
+
+           {% endcomment %}
+
+        
+          
+          </li>
+        {% endfor %}
+        <div id="product-list-foot"></div>
+      </ul>
+    {% else %}
+      <ul class="list-view-items">
+        {% for product in collection.products %}
+          <li data-product-handle="{{ product.handle }}" class="list-view-item">
+            {% include 'product-card-list', product: product, show_vendor: section.settings.show_vendor %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if is_empty_collection %}
+      <div class="grid__item small--text-center">
+        <p class="text-center">{{ 'collections.general.no_matches' | t }}</p>
+      </div>
+    {% endif %}
+
+    {% if paginate.next %}
+      <div id="more" class="load-more-trigger"><a data-current-page="{{ current_page }}" href="{{ paginate.next.url }}">Load More</a></div>        
+    {% endif %}
+
+  </div>
+  {% if collection.metafields.custom.eci_faq_section %}
+    <style>
+      .eci-faq-section{
+        margin-bottom: 30px;
+        margin-top: 30px;
+      }
+      .eci-faq-section h2{
+         color: var(--color-collection-title);
+      }
+    </style>
+  <div class="page-width eci-faq-section">
+    <div class="rte">
+    {{ collection.metafields.custom.eci_faq_section }}
+    </div>
+  </div>
+    {% endif %}
+</div>
+
+  <script id="bazaarVoicePage{{ current_page }}" type="text/javascript">
+    
+      $BV.ui( 'rr', 'inline_ratings', {
+        productIds :  [
+              {% for product in collection.products %}
+                '{{ product.handle }}',
+            {% endfor %}
+        ],
+        containerPrefix : 'BVRRInlineRating',
+      });
+
+  </script>
+
+
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": {
+    "cs": "Stránky s kolekcemi",
+    "da": "Kollektionssider",
+    "de": "Kategorie-Seiten",
+    "en": "Collection pages",
+    "es": "Páginas de colección",
+    "fi": "Kokoelman sivut",
+    "fr": "Pages de collections",
+    "it": "Pagine di collezioni",
+    "ja": "コレクションページ",
+    "ko": "컬렉션 페이지",
+    "nb": "Samlingssider",
+    "nl": "Collectiepagina's",
+    "pl": "Strony kolekcji",
+    "pt-BR": "Páginas de coleções",
+    "pt-PT": "Páginas de coleções",
+    "sv": "Produktseriesidor",
+    "th": "หน้าคอลเลกชัน",
+    "tr": "Koleksiyon sayfaları",
+    "vi": "Trang bộ sưu tập",
+    "zh-CN": "产品系列页面",
+    "zh-TW": "商品系列頁面"
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": {
+        "cs": "Rozvržení",
+        "da": "Layout",
+        "de": "Layout",
+        "en": "Layout",
+        "es": "Diseño",
+        "fi": "Asettelu",
+        "fr": "Mise en page",
+        "it": "Layout",
+        "ja": "レイアウト",
+        "ko": "레이아웃",
+        "nb": "Oppsett",
+        "nl": "Opmaak",
+        "pl": "Układ",
+        "pt-BR": "Layout",
+        "pt-PT": "Esquema",
+        "sv": "Layout",
+        "th": "เลย์เอาต์",
+        "tr": "Düzen",
+        "vi": "Bố cục",
+        "zh-CN": "布局",
+        "zh-TW": "版面配置"
+      },
+      "default": "grid",
+      "options": [
+        {
+          "value": "grid",
+          "label": {
+            "cs": "Mřížka",
+            "da": "Gitter",
+            "de": "Raster",
+            "en": "Grid",
+            "es": "Cuadrícula",
+            "fi": "Ruudukko",
+            "fr": "Grille",
+            "it": "Griglia",
+            "ja": "グリッド",
+            "ko": "그리드",
+            "nb": "Rutenett",
+            "nl": "Raster",
+            "pl": "Siatka",
+            "pt-BR": "Grade",
+            "pt-PT": "Grelha",
+            "sv": "Rutnät",
+            "th": "กริด",
+            "tr": "Izgara",
+            "vi": "Lưới",
+            "zh-CN": "网格",
+            "zh-TW": "網格"
+          }
+        },
+        {
+          "value": "list",
+          "label": {
+            "cs": "Seznam",
+            "da": "Liste",
+            "de": "Liste",
+            "en": "List",
+            "es": "Lista",
+            "fi": "Luettelo",
+            "fr": "Liste",
+            "it": "Elenco",
+            "ja": "リスト",
+            "ko": "목록",
+            "nb": "Liste",
+            "nl": "Lijst",
+            "pl": "Lista",
+            "pt-BR": "Lista",
+            "pt-PT": "Lista",
+            "sv": "Lista",
+            "th": "รายการ",
+            "tr": "Liste",
+            "vi": "Danh sách",
+            "zh-CN": "列表",
+            "zh-TW": "清單"
+          }
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "grid",
+      "label": {
+        "cs": "Počet produktů na řádek (jen mřížka)",
+        "da": "Produkter pr. række (kun gitter)",
+        "de": "Produkte per Reihe (nur Raster)",
+        "en": "Products per row (grid only)",
+        "es": "Productos por fila (solo cuadrícula)",
+        "fi": "Tuotteita per rivi (vain ruudukko)",
+        "fr": "Produits par rangée (grille uniquement)",
+        "it": "Prodotti per riga (solo griglia)",
+        "ja": "行あたりの商品数（グリッドのみ）",
+        "ko": "열 별 제품 (그리드 전용)",
+        "nb": "Produkter per rad (kun rutenett)",
+        "nl": "Producten per rij (alleen raster)",
+        "pl": "Liczba produktów na wiersz (tylko siatka)",
+        "pt-BR": "Produtos por linha (somente grade)",
+        "pt-PT": "Produtos por linha (somente grelha)",
+        "sv": "Produkter per rad (endast rutnät)",
+        "th": "สินค้าต่อแถว (กริดเท่านั้น)",
+        "tr": "Satır başına ürün (yalnızca ızgara)",
+        "vi": "Số sản phẩm trên một hàng (chỉ ở kiểu lưới)",
+        "zh-CN": "每行产品数（仅限网格）",
+        "zh-TW": "每列產品數 (僅限網格)"
+      },
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": {
+        "cs": "Počet řádků na stránku (jen mřížka)",
+        "da": "Rækker pr. side (kun gitter)",
+        "de": "Reihen per Seite (nur Raster)",
+        "en": "Rows per page (grid only)",
+        "es": "Filas por página (solo cuadrícula)",
+        "fi": "Rivejä per sivu (vain ruudukko)",
+        "fr": "Rangées par page (grille uniquement)",
+        "it": "Righe per pagina (solo griglia)",
+        "ja": "ページあたりの行数（グリッドのみ）",
+        "ko": "페이지 별 열 (그리드 전용)",
+        "nb": "Rader per side (kun rutenett)",
+        "nl": "Rijen per pagina (alleen raster)",
+        "pl": "Liczba wierszy na stronę (tylko siatka)",
+        "pt-BR": "Linhas por página (somente grade)",
+        "pt-PT": "Linhas por página (somente grelha)",
+        "sv": "Rader per sida (endast rutnät)",
+        "th": "แถวต่อหน้า (กริดเท่านั้น)",
+        "tr": "Sayfa başına satır (yalnızca ızgara)",
+        "vi": "Số hàng trong một trang (chỉ ở kiểu lưới)",
+        "zh-CN": "每行产品数（仅限网格）",
+        "zh-TW": "每頁列數 (僅限網格)"
+      },
+      "default": 2,
+      "min": 2,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": {
+        "cs": "Zobrazit obrázek kolekce",
+        "da": "Vis kollektionsbillede",
+        "de": "Kategorie-Foto anzeigen",
+        "en": "Show collection image",
+        "es": "Mostrar imagen de la colección",
+        "fi": "Näytä kokoelman kuva",
+        "fr": "Afficher l'image de la collection",
+        "it": "Mostra immagine collezione",
+        "ja": "コレクションの画像を表示する",
+        "ko": "컬렉션 이미지 표시",
+        "nb": "Vis samlingsbilde",
+        "nl": "Collectieafbeelding weergeven",
+        "pl": "Pokaż obraz kolekcji",
+        "pt-BR": "Exibir imagem da coleção",
+        "pt-PT": "Mostrar imagem da coleção",
+        "sv": "Visa produktseriebilder",
+        "th": "แสดงรูปภาพคอลเลกชัน",
+        "tr": "Koleksiyon görselini göster",
+        "vi": "Hiển thị hình ảnh bộ sưu tập",
+        "zh-CN": "显示产品系列图片",
+        "zh-TW": "顯示商品系列圖片"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": {
+        "cs": "Zobrazit dodavatele produktů",
+        "da": "Vis produktleverandører",
+        "de": "Produktanbieter anzeigen",
+        "en": "Show product vendors",
+        "es": "Mostrar proveedores del producto",
+        "fi": "Näytä tuotteen myyjät",
+        "fr": "Afficher les vendeurs",
+        "it": "Mostra fornitori prodotto",
+        "ja": "商品の販売元を表示する",
+        "ko": "제품 공급 업체 표시",
+        "nb": "Vis produktleverandører",
+        "nl": "Productleveranciers weergeven",
+        "pl": "Pokaż dostawców produktu",
+        "pt-BR": "Exibir fornecedores do produto",
+        "pt-PT": "Mostrar fornecedores do produto",
+        "sv": "Visa produktleverantörer",
+        "th": "แสดงผู้ขายสินค้า",
+        "tr": "Ürün satıcılarını göster",
+        "vi": "Hiển thị nhà cung cấp sản phẩm",
+        "zh-CN": "显示产品厂商",
+        "zh-TW": "顯示產品廠商"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_enable",
+      "label": {
+        "cs": "Povolit řazení",
+        "da": "Aktivér sortering",
+        "de": "Sortieren erlauben",
+        "en": "Enable sorting",
+        "es": "Habilitar la función ordenar",
+        "fi": "Ota lajittelu käyttöön",
+        "fr": "Activer le tri",
+        "it": "Permetti di ordinare",
+        "ja": "並べ替えを有効にする",
+        "ko": "정렬 사용",
+        "nb": "Aktiver sortering",
+        "nl": "Sortering inschakelen",
+        "pl": "Włącz sortowanie",
+        "pt-BR": "Habilitar organização",
+        "pt-PT": "Ativar ordenação",
+        "sv": "Aktivera sortering",
+        "th": "เปิดใช้การจัดเรียง",
+        "tr": "Sıralamayı etkinleştir",
+        "vi": "Bật phân loại",
+        "zh-CN": "启用排序",
+        "zh-TW": "啟用排序"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tags_enable",
+      "label": {
+        "cs": "Povolit filtrování podle štítku",
+        "da": "Aktivér tagfiltrering",
+        "de": "Tag-Filtern erlauben",
+        "en": "Enable tag filtering",
+        "es": "Habilitar filtro de etiquetas",
+        "fi": "Ota tunnisteiden suodatus käyttöön",
+        "fr": "Activer le filtrage par balises",
+        "it": "Attiva filtro tag",
+        "ja": "タグでの絞り込みを有効にする",
+        "ko": "태그 필터링 사용",
+        "nb": "Aktiver taggfiltrering",
+        "nl": "Filteren op tags inschakelen",
+        "pl": "Włącz filtrowanie tagów",
+        "pt-BR": "Habilitar filtragem de tags",
+        "pt-PT": "Ativar filtragem por etiqueta",
+        "sv": "Aktivera taggfiltrering",
+        "th": "เปิดใช้การกรองแท็ก",
+        "tr": "Etiket filtrelemeyi etkinleştir",
+        "vi": "Bật lọc thẻ",
+        "zh-CN": "启用标签筛选",
+        "zh-TW": "啟用標籤篩選功能"
+      },
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "coupon_discount_amount",
+      "label": {
+        "en": "Coupon discount amount",
+        "es": "Cantidad de descuento del cupón",
+        "fr": "Montant de la réduction du coupon"
+      }
+    },
+    {
+      "type": "text",
+      "id": "coupon_code",
+      "info": "Enter the tag that is currently used to distinguish products with a coupon discount in order to display the coupon code flag on individual products.",
+      "label": {
+        "en": "Coupon code",
+        "es": "Código promocional",
+        "fr": "Code de coupon"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": {
+        "en": "Collection",
+        "es": "Colección",
+        "fr": "Collection"
+      },
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection_filters",
+          "info": "Choose which collections should show on the collections template.",
+          "label": {
+            "en": "Collection",
+            "es": "Colección",
+            "fr": "Collection"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+

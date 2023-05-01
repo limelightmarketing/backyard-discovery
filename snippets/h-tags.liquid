@@ -1,0 +1,32 @@
+{%- if block.settings.heading_size == 'h2'  -%}
+  {%- if block.settings.header-alignment == 'left' -%}
+      <h2 class="company-template-left-h2" style="color:#6CB33F ; text-align:{{block.settings.header-alignment}};" >
+        {{ block.settings.title }}
+      </h2>
+  {%- else block.settings.header-alignment == 'center' -%}
+      <h2 class="company-template-center-h2" style="color:#6CB33F ; text-align:{{block.settings.header-alignment}};" >
+        {{ block.settings.title }}
+      </h2>
+  {%- endif -%}	
+{%- endif -%}	
+
+{%- if block.settings.heading_size == 'h3' -%}
+  {%- if block.settings.header-alignment == 'left' -%}
+      <h3 class="company-template-left-h3" style="color:#6CB33F ; text-align:{{block.settings.header-alignment}};" >
+        {{ block.settings.title }}
+      </h3>
+  {%- else block.settings.header-alignment == 'center' -%}
+      <h3 class="company-template-center-h3" style="color:#6CB33F ; text-align:{{block.settings.header-alignment}};" >
+        {{ block.settings.title }}
+      </h3>
+  {%- endif -%}
+{%- endif -%}
+
+{%- if block.settings.heading_size == 'h4' -%}
+
+    <h4 style="color:#6CB33F ; text-align:{{block.settings.header-alignment}};" >
+      {{ block.settings.title }}
+    </h4>
+
+{%- endif -%}
+

@@ -1,0 +1,188 @@
+{% schema %}
+  {
+    "name": "Page Banner",
+    "blocks": [
+      {
+        "type": "breadcrumb",
+        "name": "Breadcrumb",
+        "settings": [
+          {
+            "type": "text",
+            "id": "link_text",
+            "label": "Link Text"
+          },
+          {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link URL"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "paragraph",
+        "label": "Paragraph"
+      },
+      {
+        "type": "select",
+        "id": "media_type",
+        "label": "Media Type",
+        "default": "image",
+        "options": [
+          {
+            "value": "image",
+            "label": "Image"
+          }, {
+            "value": "video",
+            "label": "Video"
+          }
+        ]
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      }, {
+        "type": "video",
+        "id": "video",
+        "label": "Video"
+      }
+    ],
+    "presets": [{
+      "name": "Page Banner",
+      "blocks": [{
+        "type": "breadcrumb",
+        "settings": {
+          "link_text": "Home",
+          "link_url": "/"
+        }
+      }],
+      "settings": {
+        "title": "Page Title",
+        "paragraph": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel tincidunt lacinia, nisl nisl aliquam lorem, eu aliquam nisl nisl sit amet lorem. Sed euismod, nisl vel tincidunt lacinia, nisl nisl aliquam lorem, eu aliquam nisl nisl sit amet lorem.",
+        "media_type": "image"
+      }
+    }]
+  }
+{% endschema %}
+
+<section class="banner bg-primary md:max-h-104">
+  <div class="flex flex-col md:flex-row items-stretch md:justify-end">
+    <div class="px-4 flex md:justify-end h-full">
+      <div class="max-w-2xl px-4 md:pl-12 pb-4">
+        <div class="my-8 md:mb-12">
+          {% if section.blocks %}
+            {% for block in section.blocks %}
+
+              {% if forloop.last %}
+                {% assign pipe = '' %}
+              {% else %}
+                {% assign pipe = ' <span class="text-white">|</span> ' %}
+              {% endif %}
+              
+              {% if block.type == 'breadcrumb' %}
+                {% if block.settings.link_url %}
+                  <a href="{{ block.settings.link_url }}" style="color: #fff !important;" class=" hover:underline text-sm">{{ block.settings.link_text }}</a>{{ pipe }}
+                {% else %}
+                  <span class="text-white text-sm">{{ block.settings.link_text }}</span>{{ pipe }}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+        
+        <div class="flex-grow pb-0 md:pb-12">
+          {% if section.settings.title %}
+            <h2 class="text-2xl md:text-6xl font-bold mb-4 text-white break-normal">{{ section.settings.title }}</h2>
+          {% endif %}
+
+          {% if section.settings.paragraph %}
+            <p class="text-white">{{ section.settings.paragraph }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if section.settings.media_type == 'image' %}
+      <div class="md:w-1/2 max-h-104">
+        <img class="w-full h-full max-h-104 object-cover" src="{{ section.settings.image | img_url: 'original' }}" alt="{{ section.settings.title }}">
+      </div>
+    {% elsif section.settings.media_type == 'video' %}
+      <div class="md:w-1/2 banner__video relative group cursor-pointer max-h-104">
+        <div style="background-color: rgba(0, 0, 0, 0.25);" 
+        class="banner__video-play absolute w-full h-full inset-0 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <i class="fa fas fa-play-circle text-6xl text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+        </div>
+      
+        {{ section.settings.video | video_tag: image_size: '400x', autoplay: true, muted: true, loop: true, controls: false }}
+      </div>
+    {% endif %}
+  </div>
+
+  {% comment %}
+    Modal cloned from the original to move it outside of the section so it can be displayed on top of everything else.
+  {% endcomment %}
+  <div style="z-index: 999;" class="banner__modal fixed hidden top-0 left-1/2 transform -translate-x-1/2 w-full h-screen px-2"> 
+    <div class="banner__close-modal absolute top-0 left-0 w-full h-full bg-black opacity-75 cursor-pointer"></div> 
+    <div class="flex items-center justifty-center h-full">
+      <div class="flex justify-center items-center px-2 pt-12 pb-2 bg-white rounded shadow relative max-w-2xl w-full mx-auto">
+        <div class="banner__close-modal absolute top-0 right-0 p-2 cursor-pointer">
+          <i class="fa fas fa-times text-2xl"></i>
+        </div>
+        <div class="w-full h-full">
+          {{ section.settings.video | video_tag: image_size: '400x', autoplay: false, muted: false, loop: false, controls: true }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %} 
+
+  .banner__video video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+{% endstylesheet %}
+
+{% javascript %} 
+  window.addEventListener('load', () => {
+    const videoIcons = document.querySelectorAll('.banner__video-play');
+    videoIcons.forEach(icon => {
+      icon.addEventListener('click', (e) => { 
+        const section = e.target.closest('.banner');
+        const modal = section.querySelector('.banner__modal');
+        const newModal = modal.cloneNode(true);
+        
+        newModal.classList.add('banner__modal--clone');
+        document.body.appendChild(newModal);
+
+        const video = newModal.querySelector('video');
+        //video.muted = false;
+        
+        newModal.classList.remove('hidden');
+        video.play();
+
+        const closeModals = newModal.querySelectorAll('.banner__close-modal');
+    
+        closeModals.forEach(modal => {
+          modal.addEventListener('click', (e) => {
+            const modal = e.target.closest('.banner__modal--clone');
+            const video = modal.querySelector('video'); 
+            modal.remove();
+            video.pause();
+          });
+        });
+      });
+    });
+  })
+{% endjavascript %}

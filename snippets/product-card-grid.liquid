@@ -1,0 +1,150 @@
+{% comment %}
+    Renders a product card using "Grid" style
+    Accepts:
+    - max_height: {Number} Maximum height of the product's image (required)
+    - product: {Object} Product Liquid object (required)
+    - show_vendor: {Boolean} Show the product's vendor depending on the section setting (optional)
+
+    Usage:
+    {% include 'product-card-grid', max_height: max_height, product: product, show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+{%- liquid
+  assign compare_at_price = product.compare_at_price
+  assign price = product.price
+  assign available = product.available
+  assign variant = product.variants.first
+  assign money_price = price | money
+-%}
+
+{% assign sold_out_class = '' %}
+{% assign new_class = '' %}
+{% assign bestseller_class = '' %}
+{% assign exclusive_class = '' %}
+{% assign coupon_class = '' %}
+
+{% unless product.available or product.tags contains "pre-order" %}
+  {% assign sold_out_class = 'grid-view-item--sold-out' %}
+{% endunless %}
+
+{% if product.tags contains "New" or product.tags contains "new" %}
+  {% assign new_class = 'grid-view-item--new' %}
+{% endif %}
+
+{% if product.tags contains "pre-order" %}
+  {% assign preorder_class = 'grid-view-item--preorder' %}
+{% endif %}
+
+{% if product.tags contains "best-seller" %}
+  {% assign bestseller_class = 'grid-view-item--best-seller' %}
+{% endif %}
+
+{% if product.tags contains "exclusive" %}
+  {% assign exlusive_class = 'grid-view-item--exclusive' %}
+{% endif %}
+
+
+{% for tag in product.tags %}
+  {% if tag == section.settings.coupon_code %}
+    {% assign coupon_class = 'grid-view-item--coupon' %}
+  {% endif %} 
+{% endfor %}
+{% if compare_at_price > price %}
+  <div class="product-card__ribbon">{{ 'products.product.on_sale' | t }}</div>
+{% endif %}
+{% if product.tags contains "New" or product.tags contains "new" %}
+    <div class="product-card__ribbon">{{ 'products.product.new' | t }}</div>
+{% endif %}
+{% if product.tags contains "pre-order" %}
+<div class="product-card__ribbon-preorder">{{ 'products.product.preorder' | t }}</div>
+{% endif %}
+<div class="product-card__spacer">&nbsp;</div>
+
+<div class="grid-view-item product-card {{ sold_out_class }} {{ new_class }} {{ preorder_class }} {{ bestseller_class }} {{ exclusive_class }} {{ coupon_class }}">
+  <a class="grid-view-item__link grid-view-item__image-container full-width-link" href="{{ product.url | within: collection }}">
+    <span class="visually-hidden">{{ product.title }}</span>
+  </a>
+
+  {% capture img_id %}ProductCardImage-{{ section.id }}-{{ product.id }}{% endcapture %}
+  {% capture wrapper_id %}ProductCardImageWrapper-{{ section.id }}-{{ product.id }}{% endcapture %}
+  {%- assign preview_image = product.featured_media.preview_image -%}
+  {%- assign img_url = preview_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+  {% unless preview_image == blank %}
+    {% include 'image-style', image: preview_image, height: max_height, wrapper_id: wrapper_id, img_id: img_id %}
+  {% endunless %}
+
+  <div class="product-card__image-with-placeholder-wrapper" data-image-loading-animation>
+    <div id="{{ wrapper_id }}" class="grid-view-item__image-wrapper product-card__image-wrapper js">
+      <div style="padding-top:{% unless preview_image == blank %}{{ 1 | divided_by: preview_image.aspect_ratio | times: 100 }}%{% else %}100%{% endunless %};">
+        <img id="{{ img_id }}"
+              class="grid-view-item__image lazyload"
+              alt="{{ preview_image.alt }}"
+              data-src="{{ img_url }}"
+              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+              data-aspectratio="{{ preview_image.aspect_ratio }}"
+              data-sizes="auto"
+              data-image>
+        {%- if product.tags contains "coming soon" -%}
+             <div class="product-card__sold-out-label">Coming Soon!</div>
+        {%- else -%}
+          {% unless product.available or product.tags contains "pre-order" %}
+              <div class="product-card__sold-out-label">{{ 'products.product.sold_out' | t }}</div>
+          {% endunless %}
+        {%- endif -%}
+        {% if product.tags contains "exclusive" %}
+             <div class="product-card__sold-out-label">Exclusive!</div>
+        {% endif %}
+        
+        {% if section.settings.coupon_code %}
+          {% for tag in product.tags %}
+            {% if tag == section.settings.coupon_code %}
+              {% assign discount = tag | split: "|" | last %}
+              <div class="product-card__label--coupon">
+                <div class="product-card__label--coupon__icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="product-card__label--coupon__text">
+                  {{ 'products.product.coupon' | t: coupon_discount_amount: section.settings.coupon_discount_amount }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if product.tags.size > 0 %}
+          {% for tag in product.tags %}
+            {% if tag contains "||" %}
+              {% assign tag_array = tag | split: "||" %}
+              <div class="product-card__label--coupon">
+                <div class="product-card__label--coupon__icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="product-card__label--coupon__text">
+                  {{ tag_array[0] }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    {% capture image_size %}{{ max_height }}x{{ max_height }}{% endcapture %}
+    <img class="grid-view-item__image" src="{{ preview_image | img_url: image_size, scale: 2 }}" alt="{{ preview_image.alt }}" style="max-width: {{ max_height | times: preview_image.aspect_ratio }}px;">
+  </noscript>
+
+  <div class="h4 grid-view-item__title product-card__title" aria-hidden="true">{{ product.title }}</div>
+  <div class="product-card__popularity">
+{% unless product.tags contains 'coming soon' or product.tags contains 'pre-order' %}
+    <div id="BVRRInlineRating-{{product.handle}}" data-bv-show="inline_rating" class="BVRRInlineRating"></div>
+{%- endunless -%}
+
+    {% if product.tags contains "best-seller" %}
+      <span class="product-card__best-seller-flag">{{ 'products.product.best_seller' | t }}</span>
+    {% endif %}
+    </div>
+{% unless product.tags contains 'coming soon' %}
+  	{% include 'product-price-listing', product: product, show_vendor: show_vendor %}
+  {%- endunless -%}
+</div>

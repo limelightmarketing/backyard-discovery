@@ -1,0 +1,21 @@
+    <div class="image-picker" style="display:flex; flex-wrap: wrap; align-items:center; justify-content:center;  width: 100%;">
+
+{%- if block.settings.image_picker -%}
+    <div class="w-33" style="padding: 20px; display: flex; justify-content:center;" >
+
+        <img src="{{ block.settings.image_picker | img_url: '200x200'  }}" alt="{{ block.settings.image_alt }}"/>
+    </div>
+{%- endif -%}	
+    {%- if block.settings.image_picker_1 -%}
+    <div class="w-33" style="padding: 20px; display: flex; justify-content:center;" >
+
+        <img src="{{ block.settings.image_picker_1 | img_url: '200x200'  }}" alt="{{ block.settings.image_alt_1 }}"/>
+    </div>
+{%- endif -%}	
+    {%- if block.settings.image_picker_2 -%}
+    <div class="w-33" style="padding: 20px; display: flex; justify-content:center;" >
+
+        <img src="{{ block.settings.image_picker_2 | img_url: '200x200'  }}" alt="{{ block.settings.image_alt_2 }}"/>
+    </div>
+    {%- endif -%}	
+    </div>

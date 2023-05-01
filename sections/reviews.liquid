@@ -1,0 +1,431 @@
+<div>
+    {%- include 'section-header' -%}    
+
+  <div style="margin-top: 30px;">
+    {%- include 'breadcrumbs' -%}    
+  </div>
+{%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'textarea' -%}    
+        {%- include 'h-tags.liquid' -%} 
+        {%- when 'richtext' -%}    
+        <p> {{ block.settings.page_content }}</p>
+         {%- when 'page_content' -%}    
+     		 <p>{{ page.content }} </p>
+      {%- endcase -%}
+    {%- endfor -%}
+
+
+<div id="bydPage">
+  <div id="page" class="page-reviews" style="display:flex; justify-content:center;">
+    <div class="page-width" style="padding-left: 55px; padding-right: 55px;">
+      <div class="content-wrapper">{{ page.content }}</div>
+      
+	  <div class="btn trigger-modal">Search For Your Product</div>
+        
+      <section class="reviewable-products">
+        
+        {% assign products = "12x10-brindlewood-gazebo, 14x10-brockton-pergola, cordova-14x10-gazebo, somerville-14x10-pergola-walnut-stain, 12x12-arlington-gazebo, 12x10-arlington-gazebo, tacoma-falls, highlander-wooden-swing-set, grayson-peak-swing-set" | split: ', ' %}
+        
+        {% for productID in products %}
+        	<div data-product-id="{{ productID }}" title="Write a review" class="reviewable-product reviewable-product--{{ productID }}">
+              <div class="product-wrapper">
+                <div class="product-overlay"></div>
+                <div class="overlay-text-wrapper">
+                  <div class="overlay-text-inner">
+                    <div class="overlay-text-icon"><i class="fad fa-pencil fa-2x"></i></div>
+                    <div class="overlay-text">Write a review</div>
+                  </div>
+                </div>
+                <img src="{{ all_products[productID].featured_image.src | img_url: '300x'  }}"
+                     class="product-thumbnail"
+                     alt="{{ all_products[productID].title }}" />
+              </div>
+              <h2 class="product-name">{{ all_products[productID].title }}</h2>
+              <div id="BVRRSummaryContainer"></div>
+            </div>
+        {% endfor %}
+      </section>
+      
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Review Template",
+	"settings": [
+
+    {
+      "type": "header",
+      "content": {
+        "en": "Show Banner",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      },
+      "info": {
+        "en": "Show Banner under the header",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      }
+    },
+
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": {
+
+        "en": "Show banner",
+        "es": "mostrar banner",
+        "fr": "afficher la bannière"
+      },
+      "default": false
+    },
+	{
+      "type": "text",
+      "id": "banner_text",
+      "label": {
+        "en": "Banner Text",
+        "es": "texto de banner",
+        "fr": "texte de la bannière"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": {
+        "en": "Menu",
+        "es": "Menú",
+        "fr": "Menu"
+      },
+
+      "settings": [
+
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": {
+
+            "en": "Menu",
+            "es": "Menú",
+            "fr": "Menu"
+          },
+          "default": "footer"
+        }
+      ]
+    },
+
+
+    {
+      "type": "textarea",
+
+      "name": {
+        "en": "Title",
+        "es": "Título",
+        "fr": "Titre"
+      },
+		
+      "settings": [
+        {
+           "type": "select",
+           "id": "heading_size",
+           "options": [
+              { "value": "h2", "label": "H2"},
+              { "value": "h3", "label": "H3"},
+              { "value": "h4", "label": "H4"}
+           ],
+           "label": "Heading Size"
+        },
+        {
+           "type": "radio",
+           "id": "header-alignment",
+           "options": [
+              { "value": "left", "label": "Left"},
+              { "value": "center", "label": "Centered"}
+           ],
+           "label": "Header alignment"
+        },
+
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": {
+            "en": "Title",
+            "es": "Título",
+            "fr": "Titre"
+          },
+  			"default": {
+            "en": "Title",
+            "es": "Título",
+            "fr": "Titre"
+          }
+        }
+      ]
+    },
+	{
+      "type": "richtext",
+      "name": {
+        "en": "Editable Content",
+        "es": "Texto",
+        "fr": "Texte"
+      },
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "page_content",
+          "label": {
+            "en": "Content",
+            "es": "Contenido",
+            "fr": "Contenu"
+          },
+          "default": {
+            "en": "<p>Content</p>",
+            "es": "<p>Contenido</p>",
+            "fr": "<p>Contenu</p>"
+          }
+        }
+      ]
+    },
+	{
+      "type": "page_content",
+      "name": {
+        "en": "Page Content",
+        "es": "Page Contenido",
+        "fr": "Page Contenu"
+      }
+    },
+	{
+      "type": "button",
+      "name": {
+        "en": "Button",
+        "es": "Botón",
+        "fr": "Bouton "
+      },
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          },
+          "default": {
+            "en": "Button Text",
+            "es": "Botón de texto",
+            "fr": "Bouton texte "
+          }
+        },
+        {
+          "id": "button_link",
+          "type": "url",
+          "label": "Button Link"
+        },
+        {
+           "type": "radio",
+           "id": "button-alignment",
+           "options": [
+              { "value": "left", "label": "Left"},
+              { "value": "center", "label": "Centered"}
+           ],
+           "label": "Button alignment"
+        }
+      ]
+    }
+
+
+
+  ]
+
+}
+{% endschema %}
+
+{% stylesheet %}
+  .bv-cv2-cleanslate  .bv-core-container-137 .bv-summary-bar-minimalist .bv-write-container .bv-submission-button.bv-write-review, .bv-cv2-cleanslate .bv-core-container-137 .bv-summary-bar-minimalist .bv-read-container .bv-submission-button.bv-write-review {
+    font-size:0px;
+  }
+
+.w-33{
+	width: 33%;
+}
+
+
+@media (max-width: 780px) {
+.w-33{
+	width:100%;
+}
+.dir-column{
+flex-direction: column;
+}
+}
+  
+.w-75{
+  width: 75%;
+  }
+  
+.w-25 {
+  width: 25%;
+  }
+  
+@media (max-width: 942px) {
+.w-75{
+  width: 100%;
+  }
+  
+.w-25 {
+  width: 100%;
+  }
+}
+ 
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
+
+
+
+<!-- {{ 'bvapi.js' | asset_url | script_tag }} -->
+
+<script type="text/javascript">  
+
+    window.onload = function() {
+
+    
+
+    let reviewableProducts = document.querySelectorAll('.reviewable-product')
+
+    const patioReview = document.querySelector('.bv-patio-review');
+    const playhousesReview = document.querySelector('.bv-playhouses-review');
+    const playsetAccessoryReview = document.querySelector('.bv-playset-accessory-review');
+    const playsetsReview = document.querySelector('.bv-playsets-review');
+
+    const reviewsModalOverlay = document.querySelector('.reviews-modal-overlay');
+    const reviewsModalClose = document.querySelector('.reviews-modal__close');
+
+    for (product of reviewableProducts) {
+      product.addEventListener('click', function(e) {
+        let productId = e.currentTarget.dataset.productId;
+
+        $BV.ui('rr', 'submit_review', {
+          	productId : productId,
+        });
+      })
+    }
+
+    patioReview.addEventListener('click', function() {
+      console.log(patioReview);
+      $BV.ui('rr', 'submit_generic', {
+		    categoryId : 'PATIO2021'
+      });
+      
+      hideModal();
+    })
+
+    playhousesReview.addEventListener('click', function() {
+      console.log(playhousesReview);
+      $BV.ui('rr', 'submit_generic', {
+		    categoryId : 'PLAY2021'
+      });
+      
+      hideModal();
+    })
+
+    playsetAccessoryReview.addEventListener('click', function() {
+      console.log(playsetAccessoryReview);
+      $BV.ui('rr', 'submit_generic', {
+		    categoryId : 'PLAY2021'
+      });
+      
+      hideModal();
+    })
+
+    playsetsReview.addEventListener('click', function() {
+      console.log(playsetsReview);
+      $BV.ui('rr', 'submit_generic', {
+		    categoryId : 'PLAY2021'
+      });
+      
+      hideModal();
+    })
+
+    // $('.bv-patio-review').on('click', function() {
+    //   $BV.ui('rr', 'submit_generic', {
+		//     categoryId : '59t5egqwlo0phgq63dx750h6'
+    //   });
+      
+    //   hideModal();
+    // });
+  
+  	// $('.bv-playhouses-review').on('click', function() {
+    //   $BV.ui('rr', 'submit_generic', {
+		//     categoryId : 'bubwqewxt816qiftfgr1nvlct'
+    //   });
+      
+    //   hideModal();
+    // });
+  
+  	// $('.bv-playset-accessory-review').on('click', function() {
+    //   $BV.ui('rr', 'submit_generic', {
+		//     categoryId : 'az7yikuhpgzgr1oh8day3vim'
+    //   });
+      
+    //   hideModal();
+    // });
+  
+  	// $('.bv-playsets-review').on('click', function() {
+    //   $BV.ui('rr', 'submit_generic', {
+		//     categoryId : 'cjch7ax8cff7mcg3i33sqs5b6'
+    //   });
+      
+    //   hideModal();
+    // });
+  
+      const triggerModal = document.querySelector('.trigger-modal');
+
+      triggerModal.addEventListener('click', function() {
+        const reviewsModal = document.querySelector('.reviews-modal');
+        const reviewsModalOverlay = document.querySelector('.reviews-modal-overlay');
+        const reviewsModalWrapper = document.querySelector('.reviews-modal__wrapper');
+
+        reviewsModal.classList.add('is-active');
+        reviewsModalOverlay.classList.add('is-active');
+        reviewsModalWrapper.classList.add('is-active');
+      })
+
+    // $('.trigger-modal').on('click', function() {
+	  //   $('.reviews-modal').addClass('is-active');
+    //   $('.reviews-modal-overlay').fadeIn(215);
+    // });
+
+    reviewsModalOverlay.addEventListener('click', function() {
+      hideModal();  
+    })
+
+    reviewsModalClose.addEventListener('click', function() {
+      hideModal();  
+    })
+ 
+    function hideModal() {
+      const reviewsModal = document.querySelector('.reviews-modal')
+      const reviewsModalOverlay = document.querySelector('.reviews-modal-overlay')
+      const reviewsModalWrapper = document.querySelector('.reviews-modal__wrapper');
+
+      reviewsModal.classList.remove('is-active');
+      reviewsModalOverlay.classList.remove('is-active');
+      reviewsModalWrapper.classList.remove('is-active');
+
+    	// $('.reviews-modal').removeClass('is-active');
+    	// $('.reviews-modal-overlay').fadeOut(215);
+    };
+  }
+</script>

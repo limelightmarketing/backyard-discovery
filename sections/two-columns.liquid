@@ -1,0 +1,164 @@
+{% stylesheet %}
+  .section-two-columns {
+    background-image: url('https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-roc-solid.svg?v=1616447739');
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+  }
+
+  @media (min-width: 991px) {
+    .section-two-columns {
+      padding-top: 5rem;
+      padding-bottom: 3rem; 
+    } 
+  }
+
+  .section-two-columns .title {
+    text-align: center;
+  }
+
+  .section-two-columns p {
+    text-align: justify;
+  }
+  
+  .section-two-columns .btn-wrapper {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .section-two-columns img {
+    display: block;
+    height: auto; 
+    margin: 0 auto 1rem auto;
+  }
+
+  .section-two-columns .two-columns-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+
+  .section-two-columns .column {
+    max-width: 100%;
+    flex: 0 0 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-two-columns .column-2 .image-secondary {
+    max-width: 300px;
+    height: auto;
+    width: 100%;
+  }
+
+  @media (min-width: 991px) {
+    .section-two-columns .column {
+      max-width: 50%;
+      flex: 0 0 50%;
+    }  
+  }
+{% endstylesheet %}
+
+<div class="section-two-columns">
+  <div class="page-width">
+    <div class="two-columns-row">
+      <div class="column">
+        {% if section.settings.col1_image %}
+          <img src="{{ section.settings.col1_image | image_url: width: 500 }}" alt="{{ section.settings.col1_image.alt }}" />
+        {% endif %}
+
+        {% if section.settings.title %}
+          <h3 class="title">{{ section.settings.title }}</h3>
+        {% endif %}
+        
+        {% if section.settings.col1_content %}
+          <div>
+            <p>{{ section.settings.col1_content }}</p>
+          </div>
+        {% endif %}
+      </div>
+      <div class="column column-2">
+        {% if section.settings.col2_image1 %}
+        <img class="image-primary" src="{{ section.settings.col2_image1 | image_url: width: 500 }}" alt="{{ section.settings.col2_image1.alt }}" />
+        {% endif %}
+
+        {% if section.settings.col2_image2 %}
+        <img class="image-secondary" src="{{ section.settings.col2_image2 | image_url: width: 500 }}" alt="{{ section.settings.col2_image2.alt }}" />
+        {% endif %}
+        
+        {% if section.settings.col2_content %}
+          <div>
+            <p>{{ section.settings.col2_content }}</p>
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_link %}
+          <div class="btn-wrapper">
+            <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Two Columns",
+  "tag": "section",
+  "class": "two-columns",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "col1_image",
+      "label": "Column 1 Image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "col1_content",
+      "label": "Column 1 Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "col2_image1",
+      "label": "Column 2 Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "col2_image2",
+      "label": "Column 2 Image 2"
+    },
+    {
+      "type": "textarea",
+      "id": "col2_content",
+      "label": "Column 2 Content"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two Columns",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}
+

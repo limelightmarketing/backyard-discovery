@@ -1,0 +1,155 @@
+{%- if section.settings.heading != blank -%}
+  <div class="container mx-auto {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }} px-4">
+    <div class="md:w-6/12 w-full text-center mx-auto">
+      <div class="section-header text-center">
+        <h2 class="bold">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <div>{{ section.settings.content }}</div>
+    </div>
+  </div>
+{%- endif -%}
+
+<div class="product-video-block">
+
+<div class="container product-video mx-auto py-4">
+
+{% if section.settings.video_url != blank  %}
+  
+<style>
+  .featured-content-section.about_our_story .text__heading--.section-header__title.h1 {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+.featured-content-section.about_our_story .text__heading--.section-header__title.h1 {
+    font-size: 93px;
+    letter-spacing: -1.86px;
+    line-height: 17px;
+    font-family: dashiell-fine;
+    color: #fff;
+    font-weight: 700;
+}
+#videosLists {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+  video.thevideo {
+    width: 100%;
+    display: block;
+    max-width: 1366px;
+    margin: 0 auto;
+}
+</style>
+  
+<div id="videosLists" style="
+    position: relative;
+">  
+
+ 
+<div class="video2 aboutvideo1">
+    <video class="thevideo" loop preload="none" autoplay muted playsinline poster='{{ section.settings.image | img_url: "master" }}'>
+      <source src="{{ section.settings.video_url }}">
+    Your browser does not support the video tag.
+    </video>
+  </div>
+
+{% endif %}
+</div>
+</div>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "da": "Video",
+    "de": "Video",
+    "en": "Video Banner",
+    "es": "Video",
+    "fi": "Video",
+    "fr": "Vidéo",
+    "hi": "वीडियो",
+    "it": "Video",
+    "ja": "ビデオ",
+    "ko": "동영상",
+    "nb": "Video",
+    "nl": "Video",
+    "pt-BR": "Vídeo",
+    "pt-PT": "Vídeo",
+    "sv": "Video",
+    "th": "วิดีโอ",
+    "zh-CN": "视频",
+    "zh-TW": "影片"
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": {
+        "da": "Overskrift",
+        "de": "Überschrift",
+        "en": "Heading",
+        "es": "Título",
+        "fi": "Otsake",
+        "fr": "Titre",
+        "hi": "शीर्षक",
+        "it": "Heading",
+        "ja": "見出し",
+        "ko": "제목",
+        "nb": "Overskrift",
+        "nl": "Kop",
+        "pt-BR": "Título",
+        "pt-PT": "Título",
+        "sv": "Rubrik",
+        "th": "ส่วนหัว",
+        "zh-CN": "标题",
+        "zh-TW": "標題"
+      },
+      "default": {
+        "da": "Video",
+        "de": "Video",
+        "en": "Video",
+        "es": "Video",
+        "fi": "Video",
+        "fr": "Vidéo",
+        "hi": "वीडियो",
+        "it": "Video",
+        "ja": "ビデオ",
+        "ko": "동영상",
+        "nb": "Video",
+        "nl": "Video",
+        "pt-BR": "Vídeo",
+        "pt-PT": "Vídeo",
+        "sv": "Video",
+        "th": "วิดีโอ",
+        "zh-CN": "视频",
+        "zh-TW": "影片"
+      }
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": {
+        "en": "Video link"
+      }
+    },
+     {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "en": "Video Banner"
+      },
+      "category": {
+        "en": "Video"
+      }
+    }
+  ]
+}
+{% endschema %}

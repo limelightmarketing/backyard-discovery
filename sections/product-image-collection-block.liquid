@@ -1,0 +1,217 @@
+{%- if product.metafields.custom.gallery_title != blank -%}
+  
+  <div class="container mx-auto gallery-title {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }} px-4">
+    <div class="md:w-6/12 w-full text-center mx-auto">
+      <div class="section-header text-center">
+        <h2 class="bold">{{ product.metafields.custom.gallery_title | escape }}</h2>
+      </div>
+    </div>
+  </div>
+  
+{%- else -%}
+
+{%- if section.settings.title != blank -%}
+  <div class="container mx-auto gallery-title {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }} px-4">
+    <div class="md:w-6/12 w-full text-center mx-auto">
+      <div class="section-header text-center">
+        <h2 class="bold">{{ section.settings.title | escape }}</h2>
+      </div>
+      <div>{{ section.settings.content }}</div>
+    </div>
+  </div>
+{%- endif -%}
+
+  {%- endif -%}
+
+ 
+{% if product.metafields.custom.gallery %}
+ <div class="container product-gallery mx-auto flex image-collection md:px-4 {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }}">
+
+   
+<div class="gallery_imagages">
+   {% assign array_of_badges = product.metafields.custom.gallery.value %}
+{% if array_of_badges %}
+  <div class="first_img">
+ {% for product_badge in array_of_badges limit:1 %}
+    <img src="{{ product_badge | image_url }}">
+ {% endfor %}
+  </div>
+  
+  <div class="inner_img_div">
+ {% for product_badge in array_of_badges offset:1 %}
+   <div class="col-1-sec"> <img src="{{ product_badge | image_url }}">  </div>
+ {% endfor %}
+  </div>
+
+{% endif %}
+</div>         
+</div>
+
+{% else %}
+
+<div class="container mx-auto flex image-collection md:px-4 {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }}">
+  
+  <div class="md:w-5/12 sm:w-6/12 w-8/12 bg-cover bg-center bg-no-repeat p-4 m-1" style="background-image:url('{{ section.settings.image1|image_url }}');"></div>
+  <div class="md:w-2/12 custom-width sm:w-3/12 w-4/12">
+      <img class="p-1" src="{{ section.settings.image2|image_url }}" alt="{{ section.settings.image2.alt }}">
+      <img class="p-1" src="{{ section.settings.image3|image_url }}" alt="{{ section.settings.image3.alt }}">
+  </div>
+  <div class="md:w-2/12 custom-width  w-3/12 hidden sm:block">
+      <img class="p-1" src="{{ section.settings.image4|image_url }}" alt="{{ section.settings.image4.alt }}">
+      <img class="p-1" src="{{ section.settings.image5|image_url }}" alt="{{ section.settings.image5.alt }}">
+  </div>
+  <div class="w-2/12 custom-width hidden md:block">
+      <img class="p-1" src="{{ section.settings.image6|image_url }}" alt="{{ section.settings.image6.alt }}">
+      <img class="p-1" src="{{ section.settings.image7|image_url }}" alt="{{ section.settings.image7.alt }}">
+  </div>
+</div>
+
+
+{% endif %} 
+
+
+
+
+
+
+
+
+
+{% schema %}
+  {
+    "name": "Product Image Collection",
+    "settings": [
+      {
+         "type": "text",
+          "id": "title",
+          "label": "title"
+      },
+      {
+        "type": "image_picker",
+        "id": "image1",
+        "label": {
+          "en": "Add image 1.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image2",
+        "label": {
+          "en": "Add image 2.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image3",
+        "label": {
+          "en": "Add image 3.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image4",
+        "label": {
+          "en": "Add image 4.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image5",
+        "label": {
+          "en": "Add image 5.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image6",
+        "label": {
+          "en": "Add image 6.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      },
+      {
+        "type": "image_picker",
+        "id": "image7",
+        "label": {
+          "en": "Add image 7.",
+          "es": "Agrega una imagen.",
+          "fr": "Ajoutez une image."
+        }
+      }, {
+        "type": "select",
+        "id": "top_spacing",
+        "label": "Top spacing",
+        "options": [
+          {
+            "value": "pt-0",
+            "label": "None"
+          },
+          {
+            "value": "pt-4 md:pt-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pt-8 md:pt-12",
+            "label": "Small"
+          },
+          {
+            "value": "pt-16 md:pt-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pt-24 md:pt-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pt-8 md:pt-12",
+        "info": "The spacing above the section"
+      },
+      {
+        "type": "select",
+        "id": "bottom_spacing",
+        "label": "Bottom spacing",
+        "options": [
+          {
+            "value": "pb-0",
+            "label": "None"
+          },
+          {
+            "value": "pb-4 md:pb-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pb-8 md:pb-12",
+            "label": "Small"
+          },
+          {
+            "value": "pb-16 md:pb-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pb-24 md:pb-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pb-8 md:pb-12",
+        "info": "The spacing below the section"
+      }
+      
+    ],
+    "presets": [
+      {
+        "name": "Product Image Collection"
+      }
+    ]
+  }
+{% endschema %}

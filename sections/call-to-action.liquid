@@ -1,0 +1,196 @@
+{% stylesheet %}
+.section-call-to-action {
+  background-color: var(--color-primary);
+  padding: 5rem 0.5rem;
+  position: relative;
+}
+
+.section-call-to-action .rte.text-white * {
+  color: #fff;
+}
+
+.section-call-to-action h2,
+.section-call-to-action .rte {
+  transition: transform 215ms;
+}
+
+.section-call-to-action:hover h2 {
+  transform: scale(1.25);
+}
+
+.section-call-to-action:hover .rte {
+  transform: scale(1.25) translateY(15px);
+}
+
+.section-call-to-action::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  background-color: #000;
+  transition: opacity 215ms;
+}
+
+.section-call-to-action:hover::before {
+  opacity: 0.5;
+}
+
+.section-call-to-action .cta-link {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.call-to-action__rte {
+  margin-top: 2rem;
+} 
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
+
+<section class="section-call-to-action">
+  
+  <a class="cta-link" href="{{ section.settings.button_link.url }}">
+  {% if section.settings.title != blank %}
+    <div class="section-header text-center text-white">
+  	  <h2 class="call-to-action__title">{{ section.settings.title }}</h2>
+    </div>
+  {% endif %}
+  {% if section.settings.text != blank %} 
+	  <div class="call-to-action__rte rte text-center text-white">{{ section.settings.text }}</div>
+  {% endif %}
+  </a>
+</section>
+
+{% schema %}
+  {
+    "name": "Call To Action",
+    "settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": {
+				"cs": "Nadpis",
+                "da": "Overskrift",
+                "de": "Titel",
+                "en": "Heading",
+                "es": "Título",
+                "fi": "Otsake",
+                "fr": "En-tête",
+                "it": "Heading",
+                "ja": "見出し",
+                "ko": "제목",
+                "nb": "Overskrift",
+                "nl": "Kop",
+                "pl": "Nagłówek",
+                "pt-BR": "Título",
+                "pt-PT": "Título",
+                "sv": "Rubrik",
+                "th": "ส่วนหัว",
+                "tr": "Başlık",
+                "vi": "Tiêu đề",
+                "zh-CN": "标题",
+                "zh-TW": "標題"
+			},
+			"default": {
+				"cs": "Nadpis",
+                "da": "Overskrift",
+                "de": "Titel",
+                "en": "Heading",
+                "es": "Título",
+                "fi": "Otsake",
+                "fr": "En-tête",
+                "it": "Heading",
+                "ja": "見出し",
+                "ko": "제목",
+                "nb": "Overskrift",
+                "nl": "Kop",
+                "pl": "Nagłówek",
+                "pt-BR": "Título",
+                "pt-PT": "Título",
+                "sv": "Rubrik",
+                "th": "ส่วนหัว",
+                "tr": "Başlık",
+                "vi": "Tiêu đề",
+                "zh-CN": "标题",
+                "zh-TW": "標題"
+			}
+		},
+		{
+          "type": "richtext",
+          "id": "text",
+          "label": {
+            "cs": "Text",
+            "da": "Tekst",
+            "de": "Text",
+            "en": "Text",
+            "es": "Texto",
+            "fi": "Teksti",
+            "fr": "Texte",
+            "it": "Testo",
+            "ja": "テキスト",
+            "ko": "텍스트",
+            "nb": "Tekst",
+            "nl": "Tekst",
+            "pl": "Tekst",
+            "pt-BR": "Texto",
+            "pt-PT": "Texto",
+            "sv": "Text",
+            "th": "ข้อความ",
+            "tr": "Metin",
+            "vi": "Văn bản",
+            "zh-CN": "文本",
+            "zh-TW": "文字"
+          }
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": {
+            "cs": "Tlačítkový odkaz",
+            "da": "Knaplink",
+            "de": "Button-Link",
+            "en": "Button link",
+            "es": "Enlace de botón",
+            "fi": "Painikelinkki",
+            "fr": "Lien du bouton",
+            "it": "Link pulsante",
+            "ja": "ボタンのリンク",
+            "ko": "버튼 링크",
+            "nb": "Kobling for knapp",
+            "nl": "Knoplink",
+            "pl": "Link przycisku",
+            "pt-BR": "Link de botão",
+            "pt-PT": "Ligação do botão",
+            "sv": "Knapplänk",
+            "th": "ลิงก์ปุ่ม",
+            "tr": "Düğme bağlantısı",
+            "vi": "Liên kết trên nút",
+            "zh-CN": "按钮链接",
+            "zh-TW": "按鈕連結"
+          }
+        }
+	],
+    "presets": [
+		{
+          "name": {
+            "en": "Call to action"
+          },
+          "category": {
+            "en": "Text"
+          }
+		}
+      ]
+  }
+{% endschema %}

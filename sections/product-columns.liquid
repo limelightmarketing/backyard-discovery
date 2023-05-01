@@ -1,0 +1,178 @@
+{% schema %}
+  {
+    "name": "Product Columns",
+    "settings": [
+      {
+        "type": "collection_list",
+        "id": "collections",
+        "label": "Collections",
+        "info": "Select the collections you want to display products from."
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "info": "The title of the section."
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Columns"
+      }
+    ]
+  }
+{% endschema %}
+
+{% if section.settings.collections %}
+  <section class="container px-4 mx-auto py-12">
+
+    {% if section.settings.title %}
+      <h2 class="text-xl md:text-3xl font-bold mb-8 text-center">{{ section.settings.title }}</h2>
+    {% endif %}
+    
+    <div class="flex flex-wrap items-stretch -mx-4">
+      {% for collection in section.settings.collections %}
+        {% for product in collection.products %}
+          <a style="display: none;" href="{{ product.url }}" data-product-id="{{ product.id }}" class="order-6 w-full sm:w-1/2 md:w-1/4 px-4 group mb-4">
+            <div class="relative pb-16 h-full">
+              <div class="mb-4 product-columns__image">{{ product.featured_image | img_url: 'medium' | img_tag: product.title }}</div>
+              <h3 class="font-bold mb-4 text-xl md:text-xl group-hover:underline">{{ product.title }}</h3>
+              <div class="absolute bottom-0 left-0">
+                <div id="BVRRInlineRating-{{product.handle}}" data-bv-show="inline_rating" class="BVRRInlineRating"></div>
+                <div class="font-bold mb-4 text-xl md:text-2xl">{{ product.price | money }}</div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.button_link %}
+      <div class="text-center">
+        <a class="btn btn-primary" href="{{ section.settings.button_link }}">{{ section.settings.button_text }}</a>
+      </div>
+    {% endif %}
+    
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .product-columns__image img {
+    width: 100%;
+    height: auto;
+  } 
+{% endstylesheet %}
+
+{% javascript %}
+   
+{% endjavascript %}
+
+<script type="text/javascript">
+    $BV.ui( 'rr', 'inline_ratings', {
+      productIds :  [
+        {% for collection in section.settings.collections %}
+          {% for product in collection.products %}
+            '{{ product.handle }}',
+          {% endfor %}
+        {% endfor %}
+      ],
+      containerPrefix : 'BVRRInlineRating',
+    });
+
+    var recentlyViewedProducts = document.cookie.replace(/(?:(?:^|.*;\s*)recentlyViewedProducts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    var recentlyViewedProductsArray = recentlyViewedProducts.split('%2C');
+    var recentlyViewedProductsArray = recentlyViewedProductsArray.reverse();
+    
+    var productIds = [
+      {% for collection in section.settings.collections %}
+        {% for product in collection.products %}
+        '{{ product.id }}',
+        {% endfor %}
+      {% endfor %}
+    ];
+
+    var recentlyViewedProductsArray = recentlyViewedProductsArray.filter(function(n){ return n != "" });
+    const productsAlreadyShown = [];
+
+    for (var i = 0; i < recentlyViewedProductsArray.length; i++) {
+      if (productIds.indexOf(recentlyViewedProductsArray[i]) > -1) {
+        var product = document.querySelector('[data-product-id="' + recentlyViewedProductsArray[i] + '"]');
+
+        product.classList.remove('order-6');
+        
+        switch (i) {
+          case 0:
+            product.classList.add('order-first');
+            product.style.display = 'block';
+            break;
+          case 1:
+            product.classList.add('order-2');
+            product.style.display = 'block';
+            break;
+          case 2:
+            product.classList.add('order-3');
+            product.style.display = 'block';
+            break;
+          case 3:
+            product.classList.add('order-4');
+            product.style.display = 'block';
+            break;
+          default:
+            break;
+        }
+        
+        product.classList.add('product-columns__product--visited');
+
+        productsAlreadyShown.push(recentlyViewedProductsArray[i]);
+      }
+    }
+    
+    const productsNotShown = productIds.filter(function(item) {
+      return productsAlreadyShown.indexOf(item) < 0;
+    });
+    
+    var amountOfProductsSeen = recentlyViewedProductsArray.length;
+    var amountOfProductsToDisplay = 4 - amountOfProductsSeen;
+
+    for (var i = 0; i <= amountOfProductsToDisplay; i++) {
+      var product = document.querySelector('[data-product-id="' + productsNotShown[i] + '"]');
+
+      const order = amountOfProductsSeen + i + 1;
+
+      product.classList.remove('order-6');
+
+      switch (order) {
+        case 1:
+          product.classList.add('order-first');
+          product.style.display = 'block';
+          break;
+        case 2:
+          product.classList.add('order-2');
+          product.style.display = 'block';
+          break;
+        case 3:
+          product.classList.add('order-3');
+          product.style.display = 'block';
+          break;
+        case 4:
+          product.classList.add('order-4');
+          product.style.display = 'block';
+          break;
+        default:
+          break;
+      }
+      
+      product.classList.add('product-columns__product--not-visited');
+    }
+    
+</script>

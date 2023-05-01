@@ -1,0 +1,64 @@
+<div id="product-reviews-questions" class="product-reviews--wrapper page-width">
+    <nav class="reviews-questions__tabs">
+        <div class="single-product__tab-toggle single-product__tab-toggle--reviews single-product__tab--active">
+            {{ 'products.product.reviews' | t }}
+        </div>
+        <div class="single-product__tab-toggle single-product__tab-toggle--questions">
+            {{ 'products.product.questions' | t }}
+        </div>
+    </nav>
+
+    <section id="single-product__tab-content--reviews"
+        class="single-product__tab-content single-product__tab-content--reviews single-product__tab--active">
+        <div id="BVRRContainer"></div>
+    </section>
+
+    <section id="single-product__tab-content--questions"
+        class="single-product__tab-content single-product__tab-content--questions">
+        <div id="BVQAContainer"></div>
+    </section>
+</div>
+
+<script type="text/javascript">
+    document.querySelector('.single-product__tab-toggle--reviews').addEventListener('click', () => {
+        toggleReviews();
+    });
+
+    document.querySelector('.single-product__tab-toggle--questions').addEventListener('click', () => {
+        toggleQuestions();
+    });
+
+    function toggleQuestions() {
+        document.querySelector('.single-product__tab-content--questions').classList.add('single-product__tab--active');
+        document.querySelector('.single-product__tab-content--reviews').classList.remove('single-product__tab--active');
+
+        document.querySelector('.single-product__tab-toggle--questions').classList.add('single-product__tab--active');
+        document.querySelector('.single-product__tab-toggle--reviews').classList.remove('single-product__tab--active');
+    }
+
+    function toggleReviews() {
+        document.querySelector('.single-product__tab-content--reviews').classList.add('single-product__tab--active');
+        document.querySelector('.single-product__tab-content--questions').classList.remove('single-product__tab--active');
+
+        document.querySelector('.single-product__tab-toggle--reviews').classList.add('single-product__tab--active');
+        document.querySelector('.single-product__tab-toggle--questions').classList.remove('single-product__tab--active');
+    }
+
+    // let questionsLink = document.querySelector('.qsw__questions');
+
+    // questionsLink.addEventListener('click', (e) => {
+    //     toggleQuestions();
+    //     e.preventDefault();
+
+    //     setTimeout(() => {
+
+    //         const destination = document.getElementById('product-reviews-questions').offsetTop;
+
+    //         scroll({
+    //             top: destination,
+    //             behavior: 'smooth'
+    //         })
+    //     }, 300)
+    // })
+
+</script>

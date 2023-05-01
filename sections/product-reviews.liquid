@@ -1,0 +1,37 @@
+{% unless product.tags contains 'coming soon' or product.tags contains 'pre-order' %}
+  {% include 'product-reviews' %}
+{% endunless %}
+{% unless product == empty %}
+  <script type="application/json" id="ProductJson-{{ section.id }}">
+    {{ product | json }}
+  </script>
+  <script type="application/json" id="ModelJson-{{ section.id }}">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+
+{% endunless %}
+
+
+{% comment %}
+{% include 'product-reviews' %}
+{% endcomment %}
+
+
+{% schema %}
+  {
+    "name": "Product Reviews List",
+    "settings": [
+      {
+         "type": "text",
+          "id": "title",
+          "label": "title"
+      }
+
+    ],
+    "presets": [
+      {
+        "name": "Product Reviews List"
+      }
+    ]
+  }
+{% endschema %}

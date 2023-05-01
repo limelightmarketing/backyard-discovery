@@ -1,0 +1,632 @@
+{% schema %}
+  {
+    "name": "Columns",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "info": "The title to display"
+      },
+      {
+        "type": "select",
+        "id": "vertical_alignment",
+        "label": "Vertical alignment",
+        "options": [
+          {
+            "value": "start",
+            "label": "Top"
+          },
+          {
+            "value": "center",
+            "label": "Middle"
+          },
+          {
+            "value": "end",
+            "label": "Bottom"
+          }
+        ],
+        "default": "center",
+        "info": "The vertical alignment of the columns"
+      },
+      {
+        "type": "select",
+        "id": "top_spacing",
+        "label": "Top spacing",
+        "options": [
+          {
+            "value": "pt-0",
+            "label": "None"
+          },
+          {
+            "value": "pt-4 md:pt-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pt-8 md:pt-12",
+            "label": "Small"
+          },
+          {
+            "value": "pt-16 md:pt-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pt-24 md:pt-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pt-8 md:pt-12",
+        "info": "The spacing above the section"
+      },
+      {
+        "type": "select",
+        "id": "bottom_spacing",
+        "label": "Bottom spacing",
+        "options": [
+          {
+            "value": "pb-0",
+            "label": "None"
+          },
+          {
+            "value": "pb-4 md:pb-8",
+            "label": "Mini"
+          },
+          {
+            "value": "pb-8 md:pb-12",
+            "label": "Small"
+          },
+          {
+            "value": "pb-16 md:pb-24",
+            "label": "Medium"
+          },
+          {
+            "value": "pb-24 md:pb-32",
+            "label": "Large"
+          }
+        ],
+        "default": "pb-8 md:pb-12",
+        "info": "The spacing below the section"
+      },
+      {
+        "type": "checkbox",
+        "id": "reverse_direction",
+        "label": "Reverse direction",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "reverse_direction_mobile",
+        "label": "Reverse direction on mobile",
+        "default": false
+      }
+    ],
+    "blocks": [
+     {
+       "name": "Column",
+       "type": "column",
+       "settings": [
+         {
+          "type": "select",
+          "id": "column_size",
+          "label": "Column Size",
+          "options": [
+            {
+              "value": "",
+              "label": "1/1"
+            },
+            {
+              "value": "md:w-3/4",
+              "label": "3/4"
+            },
+            {
+              "value": "md:w-2/3",
+              "label": "2/3"
+            },
+            {
+              "value": "md:w-1/2",
+              "label": "1/2"
+            },
+            {
+              "value": "md:w-1/3",
+              "label": "1/3"
+            },
+            {
+              "value": "md:w-1/4",
+              "label": "1/4"
+            }
+          ],
+          "default": "md:w-1/2",
+          "info": "The size of the column"
+         },
+         {
+          "type": "select",
+          "id": "order",
+          "label": "Order",
+          "default": "md:order-none",
+          "options": [
+            {
+              "value": "md:order-1",
+              "label": "1"
+            },
+            {
+              "value": "md:order-2",
+              "label": "2"
+            },
+            {
+              "value": "md:order-3",
+              "label": "3"
+            },
+            {
+              "value": "md:order-4",
+              "label": "4"
+            },
+            {
+              "value": "md:order-5",
+              "label": "5"
+            },
+            {
+              "value": "md:order-6",
+              "label": "6"
+            },
+            {
+              "value": "md:order-7",
+              "label": "7"
+            },
+            {
+              "value": "md:order-8",
+              "label": "8"
+            },
+            {
+              "value": "md:order-9",
+              "label": "9"
+            },
+            {
+              "value": "md:order-10",
+              "label": "10"
+            },
+            {
+              "value": "md:order-11",
+              "label": "11"
+            },
+            {
+              "value": "md:order-12",
+              "label": "12"
+            },
+            {
+              "value": "md:order-first",
+              "label": "First"
+            },
+            {
+              "value": "md:order-last",
+              "label": "Last"
+            },
+            {
+              "value": "md:order-none",
+              "label": "None"
+            }
+          ]
+         },
+         {
+          "type": "select",
+          "id": "mobile_order",
+          "label": "Mobile order",
+          "default": "order-none",
+          "options": [
+            {
+              "value": "order-1",
+              "label": "1"
+            },
+            {
+              "value": "order-2",
+              "label": "2"
+            },
+            {
+              "value": "order-3",
+              "label": "3"
+            },
+            {
+              "value": "order-4",
+              "label": "4"
+            },
+            {
+              "value": "order-5",
+              "label": "5"
+            },
+            {
+              "value": "order-6",
+              "label": "6"
+            },
+            {
+              "value": "order-7",
+              "label": "7"
+            },
+            {
+              "value": "order-8",
+              "label": "8"
+            },
+            {
+              "value": "order-9",
+              "label": "9"
+            },
+            {
+              "value": "order-10",
+              "label": "10"
+            },
+            {
+              "value": "order-11",
+              "label": "11"
+            },
+            {
+              "value": "order-12",
+              "label": "12"
+            },
+            {
+              "value": "order-first",
+              "label": "First"
+            },
+            {
+              "value": "order-last",
+              "label": "Last"
+            },
+            {
+              "value": "order-none",
+              "label": "None"
+            }
+          ]
+         },
+         {
+           "type": "image_picker",
+           "id": "image",
+           "label": "Image",
+            "info": "The image to display"
+         },
+         {
+          "type": "select",
+          "id": "image_alignment",
+          "label": "Image alignment",
+          "default": "mr-auto",
+          "options": [
+            {
+              "value": "mr-auto",
+              "label": "Left"
+            },
+            {
+              "value": "ml-auto",
+              "label": "Right"
+            },
+            {
+              "value": "mx-auto",
+              "label": "Center"
+            },
+            {
+              "value": "w-full",
+              "label": "Full width"
+            }
+          ],
+          "info": "The alignment of the image"
+         },
+         {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "text-left",
+          "options": [
+            {
+              "value": "text-left",
+              "label": "Left"
+            },
+            {
+              "value": "text-center",
+              "label": "Center"
+            },
+            {
+              "value": "text-right",
+              "label": "Right"
+            }
+          ],
+          "info": "The alignment of the text"
+         },
+         {
+          "type": "checkbox",
+          "id": "image_shadow",
+          "label": "Image shadow",
+          "default": true,
+          "info": "Add a shadow to the image"
+         },
+         {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "The video to display"
+         },
+         {
+          "type": "checkbox",
+          "id": "unmute_video",
+          "label": "Unmute video",
+          "default": false
+         },
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+            "info": "The title to display"
+         },
+         {
+          "type": "checkbox",
+          "id": "tablet_title",
+          "label": "Make title smaller on tablet",
+          "default": false
+         },
+         {
+           "type": "text",
+           "id": "subtitle",
+           "label": "Subtitle",
+            "info": "The subtitle to display"
+         },
+         {
+          "type": "richtext",
+          "id": "paragraph",
+          "label": "Paragraph",
+          "info": "The paragraph to display"
+         },
+         {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link",
+          "info": "The link for the button"
+         },
+         {
+           "type": "text",
+           "id": "button_label",
+           "label": "Button Label",
+            "info": "The label for the button"
+         },
+         {
+          "type": "url",
+          "id": "text_link",
+          "label": "Text link",
+          "info": "The link for the text"
+         },
+         {
+           "type": "text",
+           "id": "text_link_label",
+           "label": "Text Link Label",
+            "info": "The label for the text link"
+         }
+       ]
+     }
+  ],
+  "presets": [
+    {
+      "name": "Columns",
+      "settings": {
+        "vertical_alignment": "center",
+        "top_spacing": "pt-8 md:pt-12",
+        "bottom_spacing": "pb-8 md:pb-12"
+      },
+      "blocks": [
+        {
+          "type": "column",
+          "settings": {
+            "column_size": "md:w-1/2",
+            "image_alignment": "mr-auto",
+            "image_shadow": false,
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "paragraph": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel tincidunt luctus, nunc nisl aliquam massa, eget aliquam nisl nisl sit amet lorem. Sed euismod, nisl vel tincidunt luctus, nunc nisl aliquam massa, eget aliquam nisl nisl sit amet lorem.</p>",
+            "button_link": "https://www.google.com",
+            "button_label": "Button"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "column_size": "md:w-1/2",
+            "image_alignment": "mr-auto",
+            "image_shadow": false,
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "paragraph": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel tincidunt luctus, nunc nisl aliquam massa, eget aliquam nisl nisl sit amet lorem. Sed euismod, nisl vel tincidunt luctus, nunc nisl aliquam massa, eget aliquam nisl nisl sit amet lorem.</p>",
+            "button_link": "https://www.google.com",
+            "button_label": "Button"
+          }
+        }
+      ]
+    }
+  ]
+  }
+{% endschema %}
+
+{% if section.settings.reverse_direction %}
+  {% assign reverse = 'md:flex-row-reverse' %}
+{% else %}
+  {% assign reverse = 'md:flex-row' %}
+{% endif %}
+
+{% if section.settings.reverse_mobile_direction %}
+  {% assign reverse_mobile = 'flex-row-reverse' %}
+{% else %}
+  {% assign reverse_mobile = 'flex-row' %}
+{% endif %}
+
+
+{% if template == 'product.product-v2' %}
+
+{%- if section.settings.title != blank -%}
+  <div class="container mx-auto {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }} px-4">
+    <div class="md:w-6/12 w-full text-center mx-auto">
+      <div class="section-header text-center">
+        <h2 class="bold">{{ section.settings.title | escape }}</h2>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+{% endif %}
+
+
+
+
+
+
+
+
+<section class="{% if template == 'product.product-v2' %} product-mulitcol {% endif %} columns columns-{{ section.id }}">
+  <div class=" container mx-auto px-4 {{ section.settings.top_spacing }} {{ section.settings.bottom_spacing }}"> 
+
+    {% if section.settings.title and template != 'product.product-v2'%}
+      <h2 class="text-xl md:text-4xl font-bold mb-4">{{ section.settings.title | replace: '®', '<sup>®</sup>' }}</h2>
+    {% endif %}
+    
+    <div class="flex flex-wrap -mx-4 items-{{ section.settings.vertical_alignment }} {{ reverse }} {{ reverse_mobile }}">
+      {% if section.blocks %}
+        {% for block in section.blocks %}
+          {% if block.type == 'column' %}
+            {% if block.settings.text_link %}
+              <a href="{{ block.settings.text_link }}">
+                <div class="w-full {{ block.settings.column_size }} {{ block.settings.mobile_order }} {{ block.settings.order }} {{ block.settings.text_alignment }} px-4 relative {% if block.settings.button_link %} pb-16 {% elsif block.settings.text_link %} pb-8 {% endif %}">
+                  {% if block.settings.image %}
+                    <img class="{{ block.settings.image_alignment }} mb-4 {% if block.settings.image_shadow %}shadow{% endif %}" src="{{ block.settings.image|image_url }}" alt="{{ block.settings.image.alt }}" />
+                  {% endif %}
+                  {% if block.settings.video %}
+
+                    {% assign muted = true %}
+                    {% assign autoplay = true %}
+                    {% assign controls = false %}
+                    {% assign loop = true %}
+
+                    {% if block.settings.unmute_video %}
+                      {% assign muted = false %}
+                      {% assign autoplay = false %}
+                      {% assign controls = true %}
+                      {% assign loop = false %}
+                    {% endif %}
+                  
+                    <div class="mb-4 {% if block.settings.image_shadow %}shadow{% endif %} relative group">
+                      {{ block.settings.video|video_tag: image_size: '1200x', autoplay: autoplay, loop: loop, muted: muted, controls: controls }}
+
+                      {% unless block.settings.unmute_video %}
+                        <div class="columns__video-pause opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow cursor-pointer flex items-center justify-center">
+                          <i class="fa fas fa-pause text-2xl"></i>
+                        </div>
+                      {% endunless %}
+                    </div>
+                  {% endif %}
+                  {% if block.settings.title %}
+                  <h2 class="column__title font-bold text-xl {% if block.settings.tablet_title == true %}xl:text-3xl{% else %}md:text-3xl{% endif %} mb-4">{{ block.settings.title | replace: '®', '<sup>®</sup>' }}</h2>
+                  {% endif %}
+                  {% if block.settings.subtitle %}
+                    <div class="font-bold text-lg md:text-2xl mb-4">{{ block.settings.subtitle | replace: '®', '<sup>®</sup>' }}</div>
+                  {% endif %}
+                  {% if block.settings.paragraph %}
+                    <div class="rte mb-4">{{ block.settings.paragraph | replace: '®', '<sup>®</sup>' }}</div>
+                  {% endif %}
+                  
+                  <div class="md:absolute md:bottom-0 md:left-4">
+                  
+                    {% if block.settings.button_link %}
+                      <a class="btn btn-primary inline-block mr-2 mb-2" href="{{ block.settings.button_link }}">{{ block.settings.button_label }}</a>
+                    {% endif %}
+                    {% if block.settings.text_link %}
+                      <a class="inline-block hover:underline cursor-pointer inline-block mb-2" href="{{ block.settings.text_link }}">{{ block.settings.text_link_label }} <div class="inline-block w-4 h-4 ml-1">{% include 'icon-chevron-right' %}</div></a>
+                    {% endif %}
+                  
+                  </div>
+                  
+                </div>
+              </a>
+            {% else %}
+              <div class="w-full {{ block.settings.column_size }} {{ block.settings.mobile_order }} {{ block.settings.order }} {{ block.settings.text_alignment }} {% if template contains 'product-v2' %}md:px-4{% else %}px-4{% endif %} relative {% if block.settings.button_link %} pb-16 {% elsif block.settings.text_link %} pb-8 {% endif %}">
+                {% if block.settings.image %}
+                  <img class="{{ block.settings.image_alignment }} mb-4 {% if block.settings.image_shadow %}shadow{% endif %}" src="{{ block.settings.image|image_url }}" alt="{{ block.settings.image.alt }}" />
+                {% endif %}
+                {% if block.settings.video %}
+
+                  {% assign muted = true %}
+                  {% assign autoplay = true %}
+                  {% assign controls = false %}
+                  {% assign loop = true %}
+
+                  {% if block.settings.unmute_video %}
+                    {% assign muted = false %}
+                    {% assign autoplay = false %}
+                    {% assign controls = true %}
+                    {% assign loop = false %}
+                  {% endif %}
+                
+                  <div class="mb-4 {% if block.settings.image_shadow %}shadow{% endif %} relative group">
+                    {{ block.settings.video|video_tag: image_size: '1200x', autoplay: autoplay, loop: loop, muted: muted, controls: controls }}
+
+                    {% unless block.settings.unmute_video %}
+                      <div class="columns__video-pause opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow cursor-pointer flex items-center justify-center">
+                        <i class="fa fas fa-pause text-2xl"></i>
+                      </div>
+                    {% endunless %}
+                  </div>
+                {% endif %}
+                {% if block.settings.title %}
+                <h2 class="column__title font-bold text-xl {% if template contains 'product-v2' %}mx-4 md:mx-0{% endif %} {% if block.settings.tablet_title == true %}xl:text-3xl{% else %}md:text-3xl{% endif %} mb-4">{{ block.settings.title | replace: '®', '<sup>®</sup>' }}</h2>
+                {% endif %}
+                {% if block.settings.subtitle %}
+                  <div class="font-bold text-lg md:text-2xl mb-4 {% if template contains 'product-v2' %}px-4 md:px-0{% endif %}">{{ block.settings.subtitle | replace: '®', '<sup>®</sup>' }}</div>
+                {% endif %}
+                {% if block.settings.paragraph %}
+                  <div class="rte mb-4 {% if template contains 'product-v2' %}px-4 md:px-0{% endif %}">{{ block.settings.paragraph | replace: '®', '<sup>®</sup>' }}</div>
+                {% endif %}
+                
+                <div class="md:absolute md:bottom-0 md:left-4 ">
+                
+                  {% if block.settings.button_link %}
+                    <a class="btn btn-primary inline-block mr-2 mb-2" href="{{ block.settings.button_link }}">{{ block.settings.button_label }}</a>
+                  {% endif %}
+                  {% if block.settings.text_link %}
+                    <a class="inline-block hover:underline cursor-pointer inline-block mb-2" href="{{ block.settings.text_link }}">{{ block.settings.text_link_label }} <div class="inline-block w-4 h-4 ml-1">{% include 'icon-chevron-right' %}</div></a>
+                  {% endif %}
+                
+                </div>
+                
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section> 
+
+
+{%  stylesheet  %} 
+
+.columns .rte p {
+  margin-bottom: 10px;
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+  const videoPauseButtons = document.querySelectorAll('.columns__video-pause');
+  videoPauseButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      const video = e.target.closest('.columns__video-pause').previousElementSibling;
+      const icon = e.target.closest('.columns__video-pause').querySelector('i');
+
+      if (video.paused) {
+        video.play();
+        icon.classList.remove('fa-play');
+        icon.classList.add('fa-pause');
+        return;
+      }
+      
+      video.pause();
+      icon.classList.remove('fa-pause');
+      icon.classList.add('fa-play');
+    });
+  });
+{% endjavascript %} 
+
+<script>
+  
+  window.addEventListener('load', function() {
+    jQuery('.columns-{{ section.id }} .column__title').matchHeight();
+  })
+
+</script>

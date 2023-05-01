@@ -1,0 +1,47 @@
+{% if product.metafields.manuals.english or product.metafields.manuals.french or product.metafields.manuals.spanish %}
+  {% capture collection_handle %}{{ product-loop | handleize }}{% endcapture %}
+  {% capture url %}{% if collection_handle != "" %}/collections/{{ product-loop }}{{ product.url }}{% else %}{{ product.url }}{% endif %}{% endcapture %}
+  <div class="assembly-instructions__item medium-up--one-half">
+      <a href="{{ url }}">
+      <div class="image-container-manuals image-container {% if product.tags contains "square" %}square{% endif %}">
+        <img class="assembly-instructions__thumbnail" loading="lazy" src="{{ product.featured_image | product_img_url: '600x600' }}" alt="{{ product.title | escape  }}" />
+      </div>
+      </a>
+      <div class="image-info">
+        <div class="image-title-container">
+          <a href="{{ url }}"><h4>{{ product.title | replace: 'Wooden Swing Set', '' }}</h4></a>
+        </div>
+        <div class="manual-container">
+          <div>{{ 'products.product.instruction_manual' | t }}</div>
+          <select class="manual-pdfs">
+            {% if product.metafields.manuals.english %}
+              <option value="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.english }}">{{ 'products.product.english' | t }}</option>
+            {% endif %}
+            {% if product.metafields.manuals.french %}
+              <option value="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.french }}">{{ 'products.product.french' | t }}</option>
+            {% endif %}
+            {% if product.metafields.manuals.spanish %}
+              <option value="//backyarddiscovery.sirv.com/PDF/{{ product.metafields.manuals.spanish }}">{{ 'products.product.spanish' | t }}</option>
+            {% endif %}
+          </select>
+          <a href="" class="download-pdf">{{ 'products.product.download_pdf' | t }}</a>
+        </div>
+        <div class="sold-by">
+          {% if product.tags contains 'BJs' or product.tags contains 'Cabelas' or product.tags contains 'hayneedle' or product.tags contains 'Home Depot' or product.tags contains 'Kmart' or product.tags contains 'Meijer' or product.tags contains 'Sams' or product.tags contains 'Sears' or product.tags contains 'Toys R Us' or product.tags contains 'Walmart' or product.tags contains 'Wayfair' %}
+          {{ 'products.product.sold_by' | t }}:
+          {% endif %}
+          {% if product.tags contains 'BJs' %} BJ's{% endif %}
+          {% if product.tags contains 'Cabelas' %} Cabelas {% if product.tags contains 'Sams' %},{% endif %} {% endif %}
+          {% if product.tags contains 'hayneedle' %} Hayneedle{% endif %}
+          {% if product.tags contains 'Home Depot' %} Home Depot, {% endif %}
+          {% if product.tags contains 'Kmart' %} Kmart, {% endif %}
+          {% if product.tags contains 'Meijer' %} Meijer{% endif %}
+          {% if product.tags contains 'Sams' %} Sam's Club{% endif %}
+          {% if product.tags contains 'Sears' %} Sears{% endif %}
+          {% if product.tags contains 'Toys R Us' %} Toys R Us{% endif %}
+          {% if product.tags contains 'Walmart' %} Walmart{% endif %}
+          {% if product.tags contains 'Wayfair' %} Wayfair{% endif %}
+        </div>
+      </div>
+  </div> 
+{% endif %}

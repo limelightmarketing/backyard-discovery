@@ -1,0 +1,13 @@
+<div class="support-menu-top-bar__wrapper">
+    <a class="support-menu-top-bar__parent" href="#">
+        <span class="top-bar__link-text no-pipe">Support {% include 'icon-chevron-down' %}</span>
+    </a>
+
+    <div class="support-menu-top-bar__menu">
+        <div class="support-menu-top-bar__menu-inner">
+            {%- for link in support_top_bar_menu.links -%}
+                <a class="support-menu-top-bar__link" href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

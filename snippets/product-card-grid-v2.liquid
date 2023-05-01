@@ -1,0 +1,132 @@
+{% comment %}
+    Renders a product card using "Grid" style
+    Accepts:
+    - max_height: {Number} Maximum height of the product's image (required)
+    - product: {Object} Product Liquid object (required)
+    - show_vendor: {Boolean} Show the product's vendor depending on the section setting (optional)
+
+    Usage:
+    {% include 'product-card-grid', max_height: max_height, product: product, show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+{%- liquid
+  assign compare_at_price = product.compare_at_price
+  assign price = product.price
+  assign available = product.available
+  assign variant = product.variants.first
+  assign money_price = price | money
+-%}
+
+{% assign sold_out_class = '' %}
+{% assign new_class = '' %}
+{% assign bestseller_class = '' %}
+{% assign coupon_class = '' %}
+
+{% unless product.available %}
+  {% assign sold_out_class = 'grid-view-item--sold-out' %}
+{% endunless %}
+
+{% if product.tags contains "New" or product.tags contains "new" %}
+  {% assign new_class = 'grid-view-item--new' %}
+{% endif %}
+
+{% if product.tags contains "best-seller" or product.tags contains "Best Seller" %}
+  {% assign bestseller_class = 'grid-view-item--best-seller' %}
+{% endif %}
+
+{% for tag in product.tags %}
+  {% if tag == section.settings.coupon_code %}
+    {% assign coupon_class = 'grid-view-item--coupon' %}
+  {% endif %} 
+{% endfor %}
+
+<div class="grid-view-item product-card bg-gray-100 {{ sold_out_class }} {{ new_class }} {{ bestseller_class }} {{ coupon_class }}">
+
+  
+  <a class="grid-view-item__link grid-view-item__image-container full-width-link" href="{{ product.url | within: collection }}">
+    <span class="visually-hidden">{{ product.title }}</span>
+  </a>
+
+  {% capture img_id %}ProductCardImage-{{ section.id }}-{{ product.id }}{% endcapture %}
+  {% capture wrapper_id %}ProductCardImageWrapper-{{ section.id }}-{{ product.id }}{% endcapture %}
+  {%- assign preview_image = product.featured_media.preview_image -%}
+  {%- assign img_url = preview_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+  {% comment %}
+    {% unless preview_image == blank %}
+      {% include 'image-style', image: preview_image, height: max_height, wrapper_id: wrapper_id, img_id: img_id %}
+    {% endunless %}
+  {% endcomment %}
+
+  <div class="product-card__image-with-placeholder-wrapper {% if is_featured == true %}product-card__is-featured{% endif %}" data-image-loading-animation>
+    <div id="{{ wrapper_id }}" class="grid-view-item__image-wrapper product-card__image-wrapper js">
+      <div>
+        <img id="{{ img_id }}"
+              class="primary-image grid-view-item__image lazyload"
+              alt="{{ preview_image.alt }}"
+              data-src="{{ img_url }}"
+              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+              data-aspectratio="{{ preview_image.aspect_ratio }}"
+              data-sizes="auto"
+              data-image>
+
+
+{% if product.images.size > 1 %}
+     <img src="{{ product.images[1] | img_url: 'large' }}" alt="{{ product.images[1].alt }}" class="product-second-image grid-view-item__image"/>
+    {% endif %}
+
+        
+        
+        {% unless product.available %}
+        	<div class="product-card__sold-out-label">{{ 'products.product.sold_out' | t }}</div>
+        {% endunless %}
+        {% if product.tags contains "New" or product.tags contains "new" %}
+        	<div class="product-card__label--new">{{ 'products.product.new' | t }}</div>
+        {% endif %}
+
+     
+        <div class="btn btn-primary product-card__view-more">View More</div>
+       
+        
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    {% capture image_size %}{{ max_height }}x{{ max_height }}{% endcapture %}
+    <img class="grid-view-item__image" src="{{ preview_image | img_url: image_size, scale: 2 }}" alt="{{ preview_image.alt }}" style="max-width: {{ max_height | times: preview_image.aspect_ratio }}px;">
+  </noscript>
+  <div class="flex md:h-6">
+      <div class="tag_name pr-2">
+     {% if product.tags contains "best-seller" or product.tags contains "Best Seller" %}
+         Top Seller {% if product.tags contains "sale" or compare_at_price > price %} | {% endif %}
+     {% endif %}
+
+    {% if product.tags contains "sale" or compare_at_price > price %}
+          Sale {% if product.tags contains "new" or product.tags contains "New Arrival" %} | {% endif %}
+     {% endif %}
+
+     {% if product.tags contains "new" or product.tags contains "New Arrival" %}
+         New Arrival  {% if product.tags contains "pre_order" or product.tags contains "Pre Order" %} | {% endif %}
+     {% endif %}
+
+     {% if product.tags contains "pre_order" %}
+     Pre Order 
+     {% endif %}
+
+    
+      </div>
+    
+  </div>  
+  <div class="h4 grid-view-item__title product-card__title" aria-hidden="true">{{ product.title }}</div>
+  <div class="product-card__popularity">
+    <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+
+    {% if product.tags contains "best-seller" or product.tags contains "Best Seller" %}
+      <span class="product-card__best-seller-flag">{{ 'products.product.best_seller' | t }}</span>
+    {% endif %}
+</div>
+
+  {% render 'product-price-listing', product: product, show_vendor: show_vendor %}
+
+
+</div>

@@ -1,0 +1,27 @@
+.page-header {
+  background-color: #4b7d2c;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-header--has-banner {
+  margin-bottom: 0;
+}
+
+.page-header__title {
+  color: #fff;
+  text-transform: uppercase;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 55px;
+  padding-right: 55px;
+  letter-spacing: var(--letter-spacing-title);
+}
+
+@media screen and (max-width: 749px) {
+  .page-header__title {
+  	padding-left: 22px;
+    padding-right: 22px;
+    font-size: 2rem;
+  }
+}

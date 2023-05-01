@@ -1,0 +1,21 @@
+.site-side-nav__linklist-item a:hover{
+	color: #6CB33F;
+}
+
+.site-side-nav__linklist-item--active{
+	color: #6CB33F;
+}
+
+.btn-outline {
+	border: 2px solid #6CB33F;
+	font-weight: bold;
+	color: #6CB33F;
+	text-transform: uppercase;
+	width: 100%;
+	font-size: 1rem;
+	letter-spacing: 0.08em;
+}
+.btn-outline:hover {
+	background-color: #6CB33F;
+	color: #fff;
+}

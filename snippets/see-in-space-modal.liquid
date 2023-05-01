@@ -1,0 +1,40 @@
+<div id="open-modal" class="ml-1 button-outline btn ">{{ 'products.product.see_in_space' | t }}</div>
+<div id="modal-overlay">
+  <div id="modal" class="lg:w-3/12 md:w-6/12 w-11/12">
+
+        <div class="section-header text-center">
+          <h2 class="product-modal-title collection-list__title">{{ 'products.product.see_the' | t }} {{product.title}} {{ 'products.product.in_your_space' | t }}</h2>
+        </div>
+        <ol class="modal-order-list pb-4">
+          <li>
+            <span>1. </span>{{ 'products.product.step_1' | t }}
+          </li>
+          <li>
+            <span>2. </span>{{ 'products.product.step_2' | t }}  
+          </li>
+          <li>
+            <span>3. </span>{{ 'products.product.step_3' | t }}
+          </li>
+          <li>
+            <span>4. </span>{{ 'products.product.step_4' | t }}
+          </li>
+        </ol>
+        <div class="md:w-4/12 w-8/12 mx-auto my-4">
+          {%- comment -%}<a 
+          class="medium-up--one-third"
+          data-thumbnail-id="qrcode"
+          target="_blank"
+          href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience">{%- endcomment -%}
+          <div>
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ shop.url }}{{product.url}}?arqrcode=1&utm_source={{product.title | escape}}&utm_medium=View%20QR%20Code&utm_campaign=AR%20Experience"
+              alt="QR Code"
+              class="one-whole" />
+          </div>
+          {%- comment -%}</a>{%- endcomment -%}
+        
+        </div>
+
+    <div id="close-modal" class="btn mt-4">{{ 'general.accessibility.close_modal' | t }}</div>
+  </div>
+</div>

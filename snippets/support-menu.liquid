@@ -1,0 +1,21 @@
+<div class="medium-up--one-quarter" style="padding: 1rem; ">  
+    {%- for block in section.blocks -%}
+     {%- case block.type -%}
+       {%- when 'link_list' -%}
+           {%- assign footer_linklist = block.settings.menu -%}
+
+             <ul class="site-side-nav__linklist
+                       {% if inline_list %}list--inline{% endif %}">
+               {%- for link in linklists[footer_linklist].links -%}
+                 <li class="site-side-nav__linklist-item" style=" font-weight:600; padding-bottom: 10px;">
+                   <a href="{{ link.url }}"
+                     {% if link.current %} aria-current="page"{% endif %}
+                   >
+                     {{ link.title | escape }}
+                   </a>
+                 </li>
+               {%- endfor -%}
+             </ul>
+       {%- endcase -%}
+     {%- endfor -%}
+</div>

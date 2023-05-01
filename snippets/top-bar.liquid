@@ -1,0 +1,51 @@
+<section class="top-bar">
+  <div class="top-bar__column-first">
+    <a href="https://service.backyarddiscovery.com/"
+       class="top-bar__register-link"
+       target="_blank">
+        <span class="top-bar__link-text top-bar__register-text hidden-sm">{{ 'general.top_bar.register_product_text' | t }}</span>
+    </a>
+    <a 
+      href="https://www.backyarddiscovery.com/pages/about"
+      class="top-bar__review-link">
+        <span class="top-bar__link-text top-bar__review-text hidden-sm">{{ 'general.top_bar.company_text' | t }}</span>
+    </a>
+
+    {% assign support_top_bar_menu = linklists.support-top-bar %}
+    {% if support_top_bar_menu.links %}
+      {% include 'support-menu-top-bar' %}
+    {% endif %}
+    
+
+  </div>
+  <div class="top-bar__column-last">
+    <a href="{{ routes.cart_url }}"
+       class="top-bar__cart-link"><img src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-view-cart.svg?v=1617636644"
+         class="top-bar__cart-icon"
+         alt="View your Backyard Discovery cart" />
+        
+         <div id="CartCount" class="site-header__cart-count{% if cart.item_count == 0 %} hide{% endif %}" data-cart-count-bubble>
+          <span data-cart-count>{{ cart.item_count }}</span>
+          <span class="icon__fallback-text medium-up--hide">{{ 'layout.cart.items_count' | t: count: cart.item_count }}</span>
+        </div>
+
+        </a>
+    <form class="search hidden-lg" action="/search" style="display:flex;">
+      <button type="submit" class="btn--link site-header__icon " data-predictive-search-open-drawer style="color:#fff;">
+        {% include 'icon-search' %}
+        <span class="icon__fallback-text">{{ 'layout.navigation.search' | t }}</span>
+      </button>
+    </form>
+  </div>
+  <div class="top-bar__column-cart">
+  {% unless linklists[section.settings.main_linklist] == blank %}
+    <button type="button" class="btn--link site-header__icon site-header__menu js-mobile-nav-toggle mobile-nav--open" style="color: #6CB33F;" aria-controls="MobileNav"  aria-expanded="false" aria-label="{{ 'layout.navigation.menu' | t }}">
+      {% include 'icon-hamburger' %}
+      {% include 'icon-close' %}
+    </button>
+  {% endunless %}
+  </div>
+
+
+</section>
+

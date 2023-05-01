@@ -1,0 +1,35 @@
+.header-mobile {
+    display: block;
+}
+
+.header-desktop {
+    display: none;
+}
+
+@media screen and (min-width: 750px) {
+    .header-mobile {
+        display: none;
+    }
+    
+    .header-desktop {
+        display: block;
+    }
+}
+
+.header-desktop .header-search-form {
+    z-index: 999;
+    position: relative;
+} 
+
+.header-desktop .header__search-input {
+    width: 0;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: width 300ms, opacity 300ms, transform 300ms;
+}
+
+.header-desktop  .header__search-input.active {
+    width: 250px;
+    opacity: 1;
+    transform: translateX(0);
+}

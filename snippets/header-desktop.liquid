@@ -1,0 +1,171 @@
+{% include 'search-drawer' %}
+
+<div data-section-id="{{ section.id }}" data-section-type="header-section" data-header-section>
+  <header class="header-element header-desktop">
+    {% if section.settings.message %}
+    {% if section.settings.home_page_only == false or request.page_type == 'index' %}
+      <style>
+        .announcement-bar {
+          background-color: {{ section.settings.color_bg }};
+        }
+
+        .announcement-bar__link:hover {
+          {% assign brightness = section.settings.color_bg | color_brightness %}
+
+          {% if brightness <= 192 %}
+            {% assign lightenAmount = 255 | minus: brightness | divided_by: 255 | times: 16 %}
+            background-color: {{ section.settings.color_bg | color_lighten: lightenAmount }};
+          {% else %}
+            {% assign darkenAmount = 255 | divided_by: brightness | times: 8 %}
+            background-color: {{ section.settings.color_bg | color_darken: darkenAmount }};
+          {% endif %}
+        }
+
+        .announcement-bar__message {
+          color: {{ section.settings.color_text }};
+        }
+      </style>
+
+      <div class="announcement-bar" role="region" aria-label="{{ 'sections.header.announcement_bar_label' | t }}">
+        {%- unless section.settings.message_link == blank -%}
+          <a href="{{ section.settings.message_link }}" class="announcement-bar__link">
+        {%- endunless -%}
+            <p class="announcement-bar__message">{{ section.settings.message_text | escape }}</p>
+        {%- unless section.settings.message_link == blank -%}
+          </a>
+        {%- endunless -%}
+      </div>
+
+    {% endif %}
+  {% endif %}
+    
+    
+    {% include 'top-bar' %}
+    
+    <div 
+      class="site-header logo--left" 
+      role="banner" 
+      style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    	<div class="flex items-center justify-between">
+        <div class="">
+          <div class="site-header__logo">
+            {% if section.settings.logo %}
+              {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <a href="{{ routes.root_url }}" class="site-header__logo-image{% if section.settings.align_logo == 'center' %} site-header__logo-image--centered{% endif %}" data-image-loading-animation>
+                {% capture logo_alt %}{{ section.settings.logo.alt | default: shop.name }}{% endcapture %}
+                <img
+                    src="https://cdn.shopify.com/s/files/1/0545/0041/files/backyard-discovery-logo.svg?v=1619622495"
+                    data-src="{{ img_url }}"
+                    data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                    data-aspectratio="{{ section.settings.logo.aspect_ratio }}"
+                    data-sizes="auto"
+                    alt="{{ logo_alt | escape }}"
+                    style="width: 128px;">
+                <noscript>
+                  <img src="{{ section.settings.logo | img_url: '128x' }}"
+                      srcset="{{ section.settings.logo | img_url: '128x' }} 1x, {{ section.settings.logo | img_url: '128x', scale: 2 }} 2x"
+                      alt="{{ section.settings.logo.alt | default: shop.name }}"
+                      style="width: 128px;">
+                </noscript>
+              </a>
+            {% else %}
+              <a class="site-header__logo-link" href="{{ routes.root_url }}">{{ shop.name }}</a>
+            {% endif %}
+          </div>
+        </div>
+
+          
+            <div class="header-menu">
+              <ul class="smart-menu__navigation"></ul> 
+            </div>
+          
+
+          <div class="text-right site-header__icons{% if shop.customer_accounts_enabled %} site-header__icons--plus{% endif %}">
+            <div class="site-header__icons-wrapper">
+
+              <form action="/search" class="flex header-search-form">
+                <div id="headerSearchInputWrapper" class="header__search-input-wrapper">
+                  <input 
+                    id="headerSearchInput" 
+                    class="header__search-input" 
+                    type="text" 
+                    placeholder="Search" 
+                    name="q" 
+                    value="{{ search.terms | escape }}" 
+                    required  
+                  />
+                </div>
+                <input type="hidden" name="type" value="product" />
+                <div class="site-header__search-toggle js-drawer-open-top"></div>
+                
+                  <button id="headerSearchSubmit" type="submit" class="btn--link site-header__icon search__button">
+                    {% include 'icon-search' %}
+                    <span class="icon__fallback-text">{{ 'layout.navigation.search' | t }}</span>
+                  </button>
+                
+              </form>
+
+              {% if shop.customer_accounts_enabled %}
+                {% if customer %}
+                  <a href="{{ routes.account_url }}" class="site-header__icon site-header__account">
+                    {% include 'icon-login' %}
+                    <span class="icon__fallback-text">{{ 'layout.customer.account' | t }}</span>
+                  </a>
+                {% else %}
+                  <a href="{{ routes.account_login_url }}" class="site-header__icon site-header__account">
+                    {% include 'icon-login' %}
+                    <span class="icon__fallback-text">{{ 'layout.customer.log_in' | t }}</span>
+                  </a>
+                {% endif %}
+              {% endif %}
+
+            </div>
+          </div>
+    	</div>
+        <div id="overlay"></div>
+    </div>
+  </header>
+</div>
+<div class="header-filler"></div>
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  {% if section.settings.logo %}
+    {% assign image_size = section.settings.logo.width | append:'x' %}
+    "logo": {{ section.settings.logo | img_url: image_size | prepend: "https:" | json }},
+  {% endif %}
+  "sameAs": [
+    {{ settings.social_twitter_link | json }},
+    {{ settings.social_facebook_link | json }},
+    {{ settings.social_pinterest_link | json }},
+    {{ settings.social_instagram_link | json }},
+    {{ settings.social_tumblr_link | json }},
+    {{ settings.social_snapchat_link | json }},
+    {{ settings.social_youtube_link | json }},
+    {{ settings.social_vimeo_link | json }}
+  ],
+  "url": {{ shop.url | append: page.url | json }}
+}
+</script>
+
+{% if request.page_type == 'index' %}
+  {% assign potential_action_target = shop.url | append: routes.search_url | append: "?q={search_term_string}" %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ shop.url | append: page.url | json }}
+    }
+  </script>
+{% endif %}

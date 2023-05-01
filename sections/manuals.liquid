@@ -1,0 +1,126 @@
+{% include 'page-header' %}
+{% include 'breadcrumbs' %}
+
+    <div class="page-width flex-container">
+      {% include 'support-menu' %}
+      <div class="manual-list medium-up--three-quarters">
+          {% for link in linklists.manuals.links %}
+          {% assign collection = link.object %}
+          {% unless collection.handle == 'frontpage' or collection.handle == 'backyard-odyssey-cedar-swing-sets' %}
+          {% capture collection_title %}{{ collection.title | escape }}{% endcapture %}
+          <div class="collection {{collection.handle}}">
+            {% if collection.description != "" %}
+            <div>
+                {{ page.content }}
+            </div> 
+            {% endif %}
+            <div class="title">
+              <div>
+                {% if collection.title contains "Products No Longer Available" %}
+                <h2 class="instruction-manuals__section-title">{{ 'products.product.discontinued_products' | t }}</h2>
+                {% else %}
+                <h2 class="instruction-manuals__section-title">
+                  {% if collection.title contains "Backyard Discovery" %}
+                      {% assign collectionTitle = "Swing Sets" %}
+                  {% elsif collection.title contains "Swing Set Accessories" %}
+                      {% assign collectionTitle = "Accessories" %}
+                  {% else %}
+                      {% assign collectionTitle = collection.title %}
+                  {% endif %}
+                  {{ collectionTitle }}</h2> 
+                {% endif %}
+              </div>
+            </div>
+            {% if collection.products.size == 0 %}
+            <div>
+              <div class="expanded-message">
+                <h2>{{ 'products.product.no_products_found' | t }}</h2>
+              </div>
+            </div>
+            {% endif %}
+            <div class="flex-container">
+              {% for product in collection.products %}
+                  {% include 'product-loop-assembly-instructions' with collection.handle %}
+              {% endfor %}
+              {% if collection.title contains "Ready Shed" %}
+                <div class="installation-videos-wrapper">
+                  {% include 'installation-videos' %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endunless %}
+  
+          {% endfor %}
+          
+        </div>
+     </div>
+  <script src='{{ 'assembly-instructions.js' | asset_url }}'></script>
+  
+  {% schema %}
+{
+  "name": "Manuals Template",
+	"settings": [
+    {
+      "type": "header",
+      "content": {
+        "en": "Show Banner",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      },
+      "info": {
+        "en": "Show Banner under the header",
+        "es": "Mostrar banner debajo del encabezado",
+        "fr": "Afficher la bannière sous l'en-tête"
+      }
+    },
+
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": {
+
+        "en": "Show banner",
+        "es": "mostrar banner",
+        "fr": "afficher la bannière"
+      },
+      "default": false
+    },
+	{
+      "type": "text",
+      "id": "banner_text",
+      "label": {
+        "en": "Banner Text",
+        "es": "texto de banner",
+        "fr": "texte de la bannière"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": {
+        "en": "Menu",
+        "es": "Menú",
+        "fr": "Menu"
+      },
+
+      "settings": [
+
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": {
+
+            "en": "Menu",
+            "es": "Menú",
+            "fr": "Menu"
+          },
+          "default": "footer"
+        }
+      ]
+    }
+  ]
+
+}
+{% endschema %}

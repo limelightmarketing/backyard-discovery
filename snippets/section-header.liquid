@@ -1,0 +1,12 @@
+  <div>
+      <div class="page-header {% if section.settings.show_banner %}page-header--has-banner{% endif %}">
+        <h1 class="page-header__title">{{ page.title }}</h1>
+    </div>
+    {%- if section.settings.show_banner -%}
+      <div class="section-header" style="background-color: #E9EBEC; padding: 25px 0 ; ">
+        <div class="page-width">
+          <h3 style="color:#6CB33F; text-transform: uppercase; margin-bottom:0">{{ section.settings.banner_text}}</h3>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>

@@ -1,0 +1,115 @@
+{% schema %}
+  {
+    "name": "Product Columns Manual",
+    "settings": [
+      {
+        "type": "product_list",
+        "id": "products",
+        "label": "Products",
+        "info": "Select the products you want to display."
+      },
+      {
+        "type": "collection",
+        "id": "fallback_collection",
+        "label": "Fallback Collection",
+        "info": "Select the collection you want to fallback to if fewer than four products are chosen."
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "info": "The title of the section."
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Columns Manual"
+      }
+    ]
+  }
+{% endschema %}
+
+{% if section.settings.products %}
+  <section class="container px-4 mx-auto py-12">
+
+    {% if section.settings.title %}
+      <h2 class="text-xl md:text-3xl font-bold mb-8 text-center">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% assign fillerProducts = section.settings.fallback_collection.products %}
+    {% assign index = 0 %}
+    
+    <div class="flex flex-wrap items-stretch -mx-4">
+      {% for product in section.settings.products %}
+          <a href="{{ product.url }}" data-product-id="{{ product.id }}" class="order-6 w-full sm:w-1/2 md:w-1/4 px-4 group mb-4">
+            <div class="relative pb-16 h-full">
+              <div class="mb-4 product-columns__image">{{ product.featured_image | img_url: 'medium' | img_tag: product.title }}</div>
+              <h3 class="font-bold mb-4 text-xl md:text-xl group-hover:underline">{{ product.title }}</h3>
+              <div class="absolute bottom-0 left-0">
+                <div id="BVRRInlineRating-{{product.handle}}" data-bv-show="inline_rating" class="BVRRInlineRating"></div>
+                <div class="font-bold mb-4 text-xl md:text-2xl">{{ product.price | money }}</div>
+              </div>
+            </div>
+          </a>
+
+          {% assign index = index | plus: 1 %}
+      {% endfor %}
+
+      {% assign fillerLimit = 4 | minus: index %}
+
+      {% for product in fillerProducts limit: fillerLimit %}
+        <a href="{{ product.url }}" data-product-id="{{ product.id }}" class="order-6 w-full sm:w-1/2 md:w-1/4 px-4 group mb-4">
+          <div class="relative pb-16 h-full">
+            <div class="mb-4 product-columns__image">{{ product.featured_image | img_url: 'medium' | img_tag: product.title }}</div>
+            <h3 class="font-bold mb-4 text-xl md:text-xl group-hover:underline">{{ product.title }}</h3>
+            <div class="absolute bottom-0 left-0">
+              <div id="BVRRInlineRating-{{product.handle}}" data-bv-show="inline_rating" class="BVRRInlineRating"></div>
+              <div class="font-bold mb-4 text-xl md:text-2xl">{{ product.price | money }}</div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+      
+    </div>
+
+    <!-- {{ fillerLimit }} -->
+
+    {% if section.settings.button_link %}
+      <div class="text-center">
+        <a class="btn btn-primary" href="{{ section.settings.button_link }}">{{ section.settings.button_text }}</a>
+      </div>
+    {% endif %}
+    
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .product-columns__image img {
+    width: 100%;
+    height: auto;
+  } 
+{% endstylesheet %}
+
+<script type="text/javascript">
+    $BV.ui( 'rr', 'inline_ratings', {
+      productIds :  [
+        {% for product in section.settings.products %}
+            '{{ product.handle }}',
+        {% endfor %}
+        {% for product in fillerProducts limit: fillerLimit %}
+            '{{ product.handle }}',
+        {% endfor %}
+      ],
+      containerPrefix : 'BVRRInlineRating',
+    });
+</script>

@@ -1,0 +1,15 @@
+<div style="text-align:{{block.settings.button-alignment}};">
+    <a href="{{ block.settings.button_link }}" target="_blank" >
+    <div  class="btn "  style="padding: 8px 16px; border-radius: 0.75rem; margin: 10px 0; text-align:center;" >
+        <span class="newsletter__submit-text--large">{{ block.settings.button_text }}</span>
+    </div>
+    </a>
+
+    {% unless block.settings.button_link_2 == nil %}
+    <a href="{{ block.settings.button_link_2 }}" target="_blank" >
+        <div  class="btn "  style="padding: 8px 16px; border-radius: 0.75rem; margin: 10px 0; text-align:center;" >
+            <span class="newsletter__submit-text--large">{{ block.settings.button_text_2 }}</span>
+        </div>
+    </a>
+    {% endunless %}
+</div>

@@ -1,0 +1,28 @@
+<div class="product-form__controls-group product-form__controls-group--submit">
+    <div class="product-form__item product-form__item--submit {%- if section.settings.enable_payment_button %}product-form__item--payment-button{%- endif -%} {%- if product.has_only_default_variant %}product-form__item--no-variants{%- endif -%}">
+        <button type="submit" name="add" {% unless product.available %}aria-disabled="true"{% endunless %} aria-label="{% unless product.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}" {% if product.tags contains 'coming soon' %}class="visually-hidden"{% else %}class="btn product-form__cart-submit{% if section.settings.enable_payment_button and product.selling_plan_groups == empty %} btn--primary{% endif %}"{% endif %} {% if settings.enable_ajax %}aria-haspopup="dialog"{% endif %} data-add-to-cart>
+            <span data-add-to-cart-text>
+                {% unless product.available %}
+                {{ 'products.product.sold_out' | t }}
+                {% else %}
+                {{ 'products.product.add_to_cart' | t }}
+                {% endunless %}
+            </span>
+            <span class="hide" data-loader>
+                {% render 'icon-spinner' %}
+            </span>
+        </button>
+
+        {% for media in product.media %}
+            {% if media.media_type == 'model' %}
+                <div class="view--in-your-space medium-up--four-fifths desktop small---hide">
+                    <span class="btn button open_qr_pop open__qr_pop">SEE IT IN YOUR PLACE</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if section.settings.enable_payment_button %}
+            {{ form | payment_button }}
+        {% endif %}
+    </div>
+</div>

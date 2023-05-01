@@ -1,0 +1,49 @@
+{% schema %}
+  {
+    "name": "CTA Thin",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      }, {
+        "type": "textarea",
+        "id": "paragraph",
+        "label": "Paragraph"
+      }, {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button Label"
+      }, {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTA Thin"
+      }
+    ]
+  }
+{% endschema %}
+
+<section class="py-12 bg-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap items-center -mx-4">
+      <div class="w-full md:w-3/4 px-4 mb-4 md:mb-0">
+        {% if section.settings.title %}
+          <h2 class="text-xl md:text-3xl font-bold mb-4">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.paragraph %}
+          <p class="mb-4 text-gray-700">{{ section.settings.paragraph }}</p>
+        {% endif %}
+      </div>
+      <div class="w-full md:w-1/4 px-4">
+        {% if section.settings.button_link %}
+          <a href="{{ section.settings.button_link }}" class="btn btn-primary mb-4">{{ section.settings.button_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

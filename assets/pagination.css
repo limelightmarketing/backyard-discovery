@@ -1,0 +1,27 @@
+.pagination {
+  text-align: center;
+}
+
+@media screen and (min-width: 48em) {
+  .pagination {
+    text-align: right;
+  }
+}
+
+.pagination--bottom .pagination {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.pagination li {
+  margin: 0 0.25rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #5b5b5b;
+}
+
+.pagination li.active,
+.pagination li a:hover {
+  color: var(--color-primary);
+}
